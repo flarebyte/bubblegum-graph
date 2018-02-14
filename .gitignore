@@ -2,3 +2,20 @@
 elm-stuff
 # elm-repl generated files
 repl-temp-*
+
+#Mac OS
+*.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+
+# VisualStudioCode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.history
+
+# this project
+build
