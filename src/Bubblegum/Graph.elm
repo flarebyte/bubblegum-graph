@@ -1,9 +1,12 @@
-module Bubblegum.Graph exposing(createNode, createEdge, createGraph)
+module Bubblegum.Graph exposing(createNode, createEdge, createGraph, findNodeModel, findEdgeModelsBySource)
 
 {-| This library provides a directed graph model for representing relationships between UI components.
 
 # Construction of graph
 @docs createNode, createEdge, createGraph
+
+# Query graph
+@docs findNodeModel, findEdgeModelBySource
 
 -}
 import List
@@ -52,7 +55,7 @@ createEdge id source destination edgeData=
     , value = edgeData
  }
 
-{-| Render.
+{-| Create graph.
 -}
 createGraph: List  (NodeModel nData) -> List (EdgeModel eData) -> GraphModel nData eData
 createGraph nodes edges=
@@ -60,3 +63,15 @@ createGraph nodes edges=
     nodes = nodes
     , edges = edges
   }
+
+{-| find node model.
+-}
+findNodeModel: GraphModel nData eData -> String -> Maybe (NodeModel nData)
+findNodeModel graphModel id =
+  graphModel.nodes |> List.filter (\n -> n.id == id)|> List.head
+
+{-| find edge models by source.
+-}
+findEdgeModelsBySource: GraphModel nData eData -> String -> List (EdgeModel eData)
+findEdgeModelsBySource graphModel src =
+  graphModel.edges |> List.filter (\edge -> edge.source == src)

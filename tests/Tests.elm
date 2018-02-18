@@ -2,20 +2,20 @@ module Tests exposing (..)
 
 import Test exposing (describe, test, Test)
 import Expect
-import Bubblegum.Graph exposing (createNode, createEdge, createGraph)
+import Bubblegum.Graph exposing (createNode, createEdge, createGraph, findNodeModel, findEdgeModelsBySource)
 import List
 import Array
 
 asNode: Int -> String
 asNode num =
     "node_" ++ toString(num)
-    
+
 nodes=List.range 0 10 |> List.map (\i -> createNode (asNode i) (asNode i))
 
-edge1_2 = createEdge "edge1_2" (asNode 1) (asNode 2) "edge1_2"
-edge2_3 = createEdge "edge2_3" (asNode 2) (asNode 3) "edge2_3"
-edge3_4 = createEdge "edge3_4" (asNode 3) (asNode 4) "edge3_4"
-edges = [edge1_2, edge2_3, edge3_4]
+createMyEdge src dest = createEdge (["edge", toString(src), toString(dest)] |> String.join "_") (asNode src) (asNode dest) (["edge_value", toString(src), toString(dest)] |> String.join "_")
+
+edges = [createMyEdge 1 2, createMyEdge 2 3, createMyEdge 3 4, createMyEdge 3 5, createMyEdge 5 6, createMyEdge 6 7, createMyEdge 6 8 ]
+
 
 myGraph = createGraph nodes edges
 
@@ -25,6 +25,16 @@ all =
         [ describe "createGraph" <|
             [ test "create a graph" <|
                 \() ->
-                    Expect.equal (List.length myGraph.edges) 3   
+                    Expect.equal (List.length myGraph.edges) 7  
+            ]
+            , describe "find nodes" <|
+            [ test "find a node by id" <|
+                \() ->
+                    Expect.equal (findNodeModel myGraph (asNode 3) |> Maybe.map .id) (Just "node_3") 
+            ]
+             , describe "find edges" <|
+            [ test "find edges by a source node" <|
+                \() ->
+                    Expect.equal (findEdgeModelsBySource myGraph (asNode 3) |> List.map .id) (["edge_3_4", "edge_3_5"]) 
             ]
         ]
