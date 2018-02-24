@@ -23,3 +23,6 @@ test:
 
 doc:
 	elm-make --docs=documentation.json
+
+diff:
+	elm-package diff

@@ -100,18 +100,20 @@ all =
                     Expect.equal (findMajorParents myGraph myMajorNodes "node_20") ([RootNode "node_1", RootNode "node_1"])
             ]
        , describe "find the major tree" <|
-            [ test "identify the immediate parent" <|
+            [ test "gets the right nodes" <|
                 \() ->
-                    Expect.equal (findMajorTree myGraph myMajorNodes) (
-                        MajorNode "@root@" [
-                            MajorNode "root_1" [
-                                MajorNode "root_15" []
-                                , MajorNode "root_20" [
-                                    MajorNode "root_15" []
-                                ]
-                            ]
+                    Expect.equal (findMajorGraph myGraph myMajorNodes |> .nodes) (
+                       [nodeIdToNode("node_1"), nodeIdToNode("node_15"), nodeIdToNode("node_20")]
+                  )
+                , test "gets the right edges" <|
+                 \() ->
+                    Expect.equal (findMajorGraph myGraph myMajorNodes |> .edges) (
+                        [
+                            createEdge "" "node_1" "node_15" Irrelevant
+                            , createEdge "" "node_20" "node_15" Irrelevant
+                            , createEdge "" "node_1" "node_20" Irrelevant
                         ]
-                        )
+                  )
             ]
        
         ]

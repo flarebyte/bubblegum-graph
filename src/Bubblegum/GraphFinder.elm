@@ -9,7 +9,7 @@ module Bubblegum.GraphFinder exposing(..)
 import List
 import Set exposing (Set)
 import Maybe
-import Bubblegum.GraphBuilder exposing (Graph, Node, Edge)
+import Bubblegum.GraphBuilder exposing (Graph, Node, Edge, createEdge)
 
 {-| find node model.
 -}
@@ -128,7 +128,16 @@ findMajorParent graph majorNodes nodeId =
       SimpleNode id ->
         findEdgesByDestination graph id |> List.map .source |> List.head |> Maybe.map (findMajorParent graph majorNodes) |> Maybe.withDefault NoNode
       
-  
+nodeRoleToId: NodeRole -> String
+nodeRoleToId nodeRole =
+  case  nodeRole of
+    RootNode id -> id
+    ConvergenceNode id -> id
+    LeafNode id -> id
+    SimpleNode id -> id
+    NoNode -> "no-node"
+
+type Irrelevant = Irrelevant
 
 {-| find the major parent
   we assume that we are not a root node
@@ -137,18 +146,34 @@ findMajorParents: Graph nData eData -> MajorNodes -> String ->  List NodeRole
 findMajorParents graph majorNodes nodeId =
   findEdgesByDestination graph nodeId |> List.map .source |> List.map (findMajorParent graph majorNodes)
 
-type MajorNode = MajorNode String (List MajorNode)
+uniqueStringList: List String -> List String
+uniqueStringList list =
+  Set.fromList list |> Set.toList 
+
+pairMajorParentAndChild: Graph nData eData -> MajorNodes -> String ->  List (Edge Irrelevant)
+pairMajorParentAndChild graph majorNodes nodeId =
+  findMajorParents graph majorNodes nodeId |> List.map nodeRoleToId |> uniqueStringList |> List.map (\pId -> createEdge "" pId nodeId Irrelevant )
+
+nodeIdToNode: String -> Node Irrelevant
+nodeIdToNode id = 
+  {id= id, value = Irrelevant}
+
+-- type MajorNode = MajorNode String (List MajorNode)
 
 {-| find the major tree
   we assume that we are not a root node
 -}
-findMajorTree: Graph nData eData -> MajorNodes -> MajorNode
-findMajorTree graph majorNodes =
+findMajorGraph: Graph nData eData -> MajorNodes -> Graph Irrelevant Irrelevant
+findMajorGraph graph majorNodes =
   let
-      majorParents = findMajorParents graph majorNodes
-      convergenceNodes = majorNodes.convergence |> Set.toList |> List.map majorParents
-      -- convert node -> parent to parent -> node
+      majorParents = pairMajorParentAndChild graph majorNodes
+      edges = majorNodes.convergence |> Set.toList |> List.map majorParents |> List.concat
+      rootNodes = majorNodes.root |> Set.toList |> List.map nodeIdToNode
+      convergenceNodes = majorNodes.convergence |> Set.toList |> List.map nodeIdToNode
   in
-      MajorNode "" []
+      {
+        nodes = rootNodes ++ convergenceNodes
+        , edges = edges
+      }
 
 
