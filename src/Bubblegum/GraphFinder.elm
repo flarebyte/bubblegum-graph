@@ -103,16 +103,16 @@ type alias EdgeMeta = Edge Irrelevant
 
 type alias GraphIndex = {
   nodes: Dict String NodeMeta
-  , sourceEdges: Dict String EdgeMeta
-  , destEdges: Dict String EdgeMeta
+  , sourceEdges: Dict String (List EdgeMeta)
+  , destEdges: Dict String (List EdgeMeta)
 }
 
-noNode = {id= "!!!no-node!!!", role = NoNode}
+noNode = {id= "!!!no-node!!!", value = NoNode}
 
 toGraphIndex: Graph nData eData -> MajorNodes -> GraphIndex
 toGraphIndex graph majorNodes =
   let
-    nodes = graph.nodes |> List.map (\n-> (n.id, findNodeRole majorNodes n.id)) |> Dict.fromList
+    nodes = graph.nodes |> List.map (\n-> (n.id, {id = n.id, value = findNodeRole majorNodes n.id})) |> Dict.fromList
     sourceEdges = graph.edges |> List.map (\e -> (e.source, {e | value = Irrelevant})) |> Dict.fromList
   in
     {
@@ -127,19 +127,19 @@ toGraphIndex graph majorNodes =
 -}
 findNodeMeta: GraphIndex -> String -> NodeMeta
 findNodeMeta graph id =
-  graph.nodes |> Dict.get |> Maybe.withDefault noNode
+  Dict.get id graph.nodes |> Maybe.withDefault noNode
 
 {-| find edge models by source.
 -}
 findSourceMeta: GraphIndex -> String -> List EdgeMeta
 findSourceMeta graph src =
-  graph.sourceEdges |> Dict.get
+  Dict.get src graph.sourceEdge
 
 {-| find edge models by destination.
 -}
 findDestinationMeta: GraphIndex -> String -> List EdgeMeta
 findDestinationMeta graph dest =
-  graph.destEdges |> Dict.get
+  Dict.get  dest graph.destEdges
 
 {-| find all the major nodes for the graph
 -}
@@ -182,9 +182,9 @@ uniqueStringList: List String -> List String
 uniqueStringList list =
   Set.fromList list |> Set.toList 
 
-pairMajorParentAndChild: Graph nData eData -> MajorNodes -> String ->  List (Edge Irrelevant)
+pairMajorParentAndChild: Graph nData eData -> MajorNodes -> String ->  List EdgeMeta
 pairMajorParentAndChild graph majorNodes nodeId =
-  findMajorParents graph majorNodes nodeId |> List.map nodeRoleToId |> uniqueStringList |> List.map (\pId -> createEdge "" pId nodeId Irrelevant )
+  findMajorParents graph majorNodes nodeId |> List.map .id |> uniqueStringList |> List.map (\pId -> createEdge "" pId nodeId Irrelevant )
 
 nodeIdToNode: String -> Node Irrelevant
 nodeIdToNode id = 
