@@ -101,10 +101,13 @@ type alias NodeMeta = Node NodeRole
   
 type alias EdgeMeta = Edge Irrelevant
 
+type alias GraphMeta = Graph NodeRole Irrelevant
+
 type alias GraphIndex = {
   nodes: Dict String NodeMeta
   , sourceEdges: Dict String (List EdgeMeta)
   , destEdges: Dict String (List EdgeMeta)
+  , majorNodes: MajorNodes
 }
 
 noNode = {id= "!!!no-node!!!", value = NoNode}
@@ -136,6 +139,7 @@ toGraphIndex graph majorNodes =
       nodes = nodes
       , sourceEdges = sourceEdges
       , destEdges = destEdges
+      , majorNodes = majorNodes
     }
 
 
@@ -177,51 +181,47 @@ findNodeRole majorNodes nodeId =
   else if Set.member nodeId majorNodes.convergence then ConvergenceNode
   else SimpleNode 
  
--- findThisOrParent
-findMajorParent: Graph nData eData -> Dict String NodeMeta -> String ->  NodeMeta
-findMajorParent graph nodes nodeId =
+-- findThisOrParent single parent
+findMajorParent: GraphIndex -> String ->  NodeMeta
+findMajorParent graph nodeId =
   let
-     nodeMeta = nodes.get nodeId |> Maybe.withDefault noNode
+     nodeMeta = findNodeMeta graph nodeId
   in
-    if nodeMeta.role == SimpleNode then
-      findEdgesByDestination graph nodeId |> List.map .source |> List.head |> Maybe.map (findMajorParent graph nodes) |> Maybe.withDefault NoNode
+    if nodeMeta.value == SimpleNode then
+      -- get the first parent and recurse
+      findDestinationMeta graph nodeId |> List.head |>  Maybe.map (\e -> findMajorParent graph e.source) |> Maybe.withDefault noNode
     else
        nodeMeta      
       
 {-| find the major parent
   we assume that we are not a root node
 -}
-findMajorParents: Graph nData eData -> MajorNodes -> String ->  List NodeMeta
-findMajorParents graph majorNodes nodeId =
-  findEdgesByDestination graph nodeId |> List.map .source |> List.map (findMajorParent graph majorNodes)
+findMajorParents: GraphIndex -> String ->  List NodeMeta
+findMajorParents graph nodeId =
+  findDestinationMeta graph nodeId |> List.map .source |> List.map (findMajorParent graph)
 
 uniqueStringList: List String -> List String
 uniqueStringList list =
   Set.fromList list |> Set.toList 
 
-pairMajorParentAndChild: Graph nData eData -> MajorNodes -> String ->  List EdgeMeta
-pairMajorParentAndChild graph majorNodes nodeId =
-  findMajorParents graph majorNodes nodeId |> List.map .id |> uniqueStringList |> List.map (\pId -> createEdge "" pId nodeId Irrelevant )
-
 nodeIdToNode: String -> Node Irrelevant
 nodeIdToNode id = 
   {id= id, value = Irrelevant}
+
 
 -- type MajorNode = MajorNode String (List MajorNode)
 
 {-| find the major tree
   we assume that we are not a root node
 -}
-findMajorGraph: Graph nData eData -> MajorNodes -> Graph Irrelevant Irrelevant
-findMajorGraph graph majorNodes =
+findMajorGraph: GraphIndex -> GraphMeta
+findMajorGraph graph =
   let
-      majorParents = pairMajorParentAndChild graph majorNodes
-      edges = majorNodes.convergence |> Set.toList |> List.map majorParents |> List.concat
-      rootNodes = majorNodes.root |> Set.toList |> List.map nodeIdToNode
-      convergenceNodes = majorNodes.convergence |> Set.toList |> List.map nodeIdToNode
+      nodes = graph.majorNodes.root ++ graph.majorNodes.convergence |> Set.toList |> List.map findNodeMeta graph
+      edges = graph.majorNodes.convergence |> Set.toList |> List.map (findMajorParents graph) |> List.concat
   in
       {
-        nodes = rootNodes ++ convergenceNodes
+        nodes = nodes
         , edges = edges
       }
 
