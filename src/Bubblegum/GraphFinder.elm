@@ -9,21 +9,25 @@ module Bubblegum.GraphFinder exposing(..)
 import List
 import Set exposing (Set)
 import Maybe
+import Dict exposing (Dict)
 import Bubblegum.GraphBuilder exposing (Graph, Node, Edge, createEdge)
 
 {-| find node model.
+  linear time O(n)
 -}
 findNode: Graph nData eData -> String -> Maybe (Node nData)
 findNode graph id =
   graph.nodes |> List.filter (\n -> n.id == id)|> List.head
 
 {-| find edge models by source.
+  linear time O(n)
 -}
 findEdgesBySource: Graph nData eData -> String -> List (Edge eData)
 findEdgesBySource graph src =
   graph.edges |> List.filter (\edge -> edge.source == src)
 
 {-| find edge models by destination.
+  linear time O(n)
 -}
 findEdgesByDestination: Graph nData eData -> String -> List (Edge eData)
 findEdgesByDestination graph dest =
@@ -78,6 +82,8 @@ findConvergenceNodeIds graph =
         |> List.map .id 
         |> Set.fromList
 
+type Irrelevant = Irrelevant
+
 type alias MajorNodes = {
   root: Set String
   , leaf: Set String
@@ -85,11 +91,55 @@ type alias MajorNodes = {
 }
 
 type NodeRole =
-  RootNode String
-  | ConvergenceNode String
-  | LeafNode String
-  | SimpleNode String
+  RootNode
+  | ConvergenceNode
+  | LeafNode
+  | SimpleNode
   | NoNode
+
+type alias NodeMeta = Node NodeRole
+  
+type alias EdgeMeta = Edge Irrelevant
+
+type alias GraphIndex = {
+  nodes: Dict String NodeMeta
+  , sourceEdges: Dict String EdgeMeta
+  , destEdges: Dict String EdgeMeta
+}
+
+noNode = {id= "!!!no-node!!!", role = NoNode}
+
+toGraphIndex: Graph nData eData -> MajorNodes -> GraphIndex
+toGraphIndex graph majorNodes =
+  let
+    nodes = graph.nodes |> List.map (\n-> (n.id, findNodeRole majorNodes n.id)) |> Dict.fromList
+    sourceEdges = graph.edges |> List.map (\e -> (e.source, {e | value = Irrelevant})) |> Dict.fromList
+  in
+    {
+      nodes = nodes
+      , sourceEdges = sourceEdges
+      , destEdges = sourceEdges --TODO
+    }
+
+
+
+{-| find node model.
+-}
+findNodeMeta: GraphIndex -> String -> NodeMeta
+findNodeMeta graph id =
+  graph.nodes |> Dict.get |> Maybe.withDefault noNode
+
+{-| find edge models by source.
+-}
+findSourceMeta: GraphIndex -> String -> List EdgeMeta
+findSourceMeta graph src =
+  graph.sourceEdges |> Dict.get
+
+{-| find edge models by destination.
+-}
+findDestinationMeta: GraphIndex -> String -> List EdgeMeta
+findDestinationMeta graph dest =
+  graph.destEdges |> Dict.get
 
 {-| find all the major nodes for the graph
 -}
@@ -105,44 +155,26 @@ findMajorNodes graph =
 -}
 findNodeRole: MajorNodes -> String -> NodeRole
 findNodeRole majorNodes nodeId =
-  if Set.member nodeId majorNodes.root then RootNode nodeId
-  else if Set.member nodeId majorNodes.leaf then LeafNode nodeId
-  else if Set.member nodeId majorNodes.convergence then ConvergenceNode nodeId
-  else SimpleNode nodeId 
+  if Set.member nodeId majorNodes.root then RootNode
+  else if Set.member nodeId majorNodes.leaf then LeafNode
+  else if Set.member nodeId majorNodes.convergence then ConvergenceNode
+  else SimpleNode 
  
-
-findMajorParent: Graph nData eData -> MajorNodes -> String ->  NodeRole
-findMajorParent graph majorNodes nodeId =
+-- findThisOrParent
+findMajorParent: Graph nData eData -> Dict String NodeMeta -> String ->  NodeMeta
+findMajorParent graph nodes nodeId =
   let
-     role = findNodeRole majorNodes nodeId
+     nodeMeta = nodes.get nodeId |> Maybe.withDefault noNode
   in
-    case role of
-      RootNode id -> 
-        RootNode id
-      ConvergenceNode id ->
-       ConvergenceNode id
-      LeafNode id->
-        LeafNode id -- should not happen !
-      NoNode ->
-        NoNode
-      SimpleNode id ->
-        findEdgesByDestination graph id |> List.map .source |> List.head |> Maybe.map (findMajorParent graph majorNodes) |> Maybe.withDefault NoNode
+    if nodeMeta.role == SimpleNode then
+      findEdgesByDestination graph nodeId |> List.map .source |> List.head |> Maybe.map (findMajorParent graph nodes) |> Maybe.withDefault NoNode
+    else
+       nodeMeta      
       
-nodeRoleToId: NodeRole -> String
-nodeRoleToId nodeRole =
-  case  nodeRole of
-    RootNode id -> id
-    ConvergenceNode id -> id
-    LeafNode id -> id
-    SimpleNode id -> id
-    NoNode -> "no-node"
-
-type Irrelevant = Irrelevant
-
 {-| find the major parent
   we assume that we are not a root node
 -}
-findMajorParents: Graph nData eData -> MajorNodes -> String ->  List NodeRole
+findMajorParents: Graph nData eData -> MajorNodes -> String ->  List NodeMeta
 findMajorParents graph majorNodes nodeId =
   findEdgesByDestination graph nodeId |> List.map .source |> List.map (findMajorParent graph majorNodes)
 
