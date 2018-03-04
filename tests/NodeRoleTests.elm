@@ -7,7 +7,7 @@ import Bubblegum.NodeRole exposing (..)
 import FixtureHelper exposing (createSimpleGraph)
 
 myGraph = createSimpleGraph
-myMajorNodes = findMajorNodes myGraph
+myMajorNodes = toMajorNodes myGraph
 
 all : Test
 all =
@@ -30,15 +30,15 @@ all =
        , describe "find the role of node" <|
             [ test "identify a root node" <|
                 \() ->
-                    Expect.equal (findNodeRole myMajorNodes "node_1") (RootNode)
+                    Expect.equal (toNodeRole myMajorNodes "node_1") (RootNode)
               , test "identify a leaf node" <|
                 \() ->
-                    Expect.equal (findNodeRole myMajorNodes "node_4") (LeafNode)
+                    Expect.equal (toNodeRole myMajorNodes "node_4") (LeafNode)
                , test "identify a convergence node" <|
                 \() ->
-                    Expect.equal (findNodeRole myMajorNodes "node_15") (ConvergenceNode)
+                    Expect.equal (toNodeRole myMajorNodes "node_15") (ConvergenceNode)
                , test "identify any other node" <|
                 \() ->
-                    Expect.equal (findNodeRole myMajorNodes "node_100") (SimpleNode)      
+                    Expect.equal (toNodeRole myMajorNodes "node_100") (SimpleNode)      
             ]
         ]

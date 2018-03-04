@@ -3,7 +3,7 @@ module Bubblegum.GraphFinder exposing(findNode, findEdgesBySource, findEdgesByDe
 {-| This library provides a directed graph model for representing relationships between UI components.
 
 # Query
-@docs findNode, findEdgesBySource, findEdgesByDestination, findRootNodes, findLeafNodes, findConvergenceNodeIds, findMajorNodes, findNodeRole
+@docs
 
 -}
 import List

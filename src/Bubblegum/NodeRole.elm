@@ -1,9 +1,9 @@
-module Bubblegum.NodeRole exposing(NodeRole(..), MajorNodes, findMajorNodes, findNodeRole)
+module Bubblegum.NodeRole exposing(NodeRole(..), MajorNodes, toMajorNodes, toNodeRole)
 
 {-| This library provides a directed graph model for representing relationships between UI components.
 
 # Query
-@docs findNode, findEdgesBySource, findEdgesByDestination, findRootNodes, findLeafNodes, findConvergenceNodeIds, findMajorNodes, findNodeRole
+@docs
 
 -}
 import Set exposing (Set)
@@ -77,8 +77,8 @@ findConvergenceNodeIds graph =
 
 {-| find all the major nodes for the graph
 -}
-findMajorNodes: Graph nData eData -> MajorNodes
-findMajorNodes graph =
+toMajorNodes: Graph nData eData -> MajorNodes
+toMajorNodes graph =
   let
       root = findRootNodeIds(graph)
       leaf = findLeafNodeIds(graph)
@@ -95,8 +95,8 @@ findMajorNodes graph =
 
 {-| find the role of a node
 -}
-findNodeRole: MajorNodes -> String -> NodeRole
-findNodeRole majorNodes nodeId =
+toNodeRole: MajorNodes -> String -> NodeRole
+toNodeRole majorNodes nodeId =
   if Set.member nodeId majorNodes.root then RootNode
   else if Set.member nodeId majorNodes.leaf then LeafNode
   else if Set.member nodeId majorNodes.convergence then ConvergenceNode
