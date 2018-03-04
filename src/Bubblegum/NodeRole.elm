@@ -25,7 +25,7 @@ type alias MajorNodes = {
 }
  
 
- {-| find all the root nodes for the graph
+{-| find all the root nodes for the graph
     A root node should have not parent but at least one children
 -}
 findRootNodeIds: Graph nData eData -> Set String
@@ -75,7 +75,7 @@ findConvergenceNodeIds graph =
         |> Set.fromList
 
 
- {-| find all the major nodes for the graph
+{-| find all the major nodes for the graph
 -}
 findMajorNodes: Graph nData eData -> MajorNodes
 findMajorNodes graph =
