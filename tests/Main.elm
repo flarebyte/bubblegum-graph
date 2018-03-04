@@ -3,6 +3,7 @@ port module Main exposing (..)
 import GraphBuilderTests
 import GraphFinderTests
 import NodeRoleTests
+import GraphIndexTests
 import Test.Runner.Node exposing (run, TestProgram)
 import Test exposing (Test)
 import Json.Encode exposing (Value)
@@ -14,6 +15,7 @@ all =
         [ GraphBuilderTests.all
         , GraphFinderTests.all
         , NodeRoleTests.all
+        , GraphIndexTests.all
         ]
 
 main : TestProgram
