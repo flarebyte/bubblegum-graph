@@ -1,4 +1,4 @@
-module Bubblegum.GraphBuilder exposing(createNode, createEdge, createGraph, Edge, Node, Graph)
+module Bubblegum.GraphBuilder exposing(createNode, createEdge, createGraph, Edge, Node, Graph, Irrelevant(..))
 
 {-| This library provides a directed graph model for representing relationships between UI components.
 
@@ -31,7 +31,7 @@ type alias Graph nData eData = {
     , edges: List (Edge eData)
   }
 
-
+type Irrelevant = Irrelevant
 
 {-| Creates a node.
 -}
@@ -61,4 +61,8 @@ createGraph nodes edges=
     nodes = nodes
     , edges = edges
   }
+
+edgeAsTuple: Edge eData -> (String, String)
+edgeAsTuple edge =
+  (edge.source, edge.destination)
 

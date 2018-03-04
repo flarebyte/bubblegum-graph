@@ -4,6 +4,7 @@ import GraphBuilderTests
 import GraphFinderTests
 import NodeRoleTests
 import GraphIndexTests
+import MajorGraphTests
 import Test.Runner.Node exposing (run, TestProgram)
 import Test exposing (Test)
 import Json.Encode exposing (Value)
@@ -16,6 +17,7 @@ all =
         , GraphFinderTests.all
         , NodeRoleTests.all
         , GraphIndexTests.all
+        , MajorGraphTests.all
         ]
 
 main : TestProgram

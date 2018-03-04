@@ -1,4 +1,4 @@
-module Bubblegum.GraphIndex exposing(toGraphIndex, findMajorParents)
+module Bubblegum.GraphIndex exposing(toGraphIndex, findMajorParents, GraphIndex, EdgeMeta, findNodeMeta)
 
 {-| This library provides a directed graph model for representing relationships between UI components.
 
@@ -9,16 +9,12 @@ module Bubblegum.GraphIndex exposing(toGraphIndex, findMajorParents)
 import List
 import Maybe
 import Dict exposing (Dict)
-import Bubblegum.GraphBuilder exposing (Graph, Node, Edge, createEdge)
+import Bubblegum.GraphBuilder exposing (Graph, Node, Edge, Irrelevant(..), createEdge )
 import Bubblegum.NodeRole exposing(NodeRole(..), MajorNodes, findNodeRole, findMajorNodes)
-
-type Irrelevant = Irrelevant
 
 type alias NodeMeta = Node NodeRole
   
 type alias EdgeMeta = Edge Irrelevant
-
-type alias GraphMeta = Graph NodeRole Irrelevant
 
 type alias GraphIndex = {
   nodes: Dict String NodeMeta
@@ -99,7 +95,3 @@ findMajorParent graph nodeId =
 findMajorParents: GraphIndex -> String ->  List NodeMeta
 findMajorParents graph nodeId =
   findDestinationMeta graph nodeId |> List.map .source |> List.map (findMajorParent graph)
-
-findMajorEdges: GraphIndex -> String ->  List EdgeMeta
-findMajorEdges graph nodeId =
-  findMajorParents graph nodeId |> List.map (\n -> {id= "", source = n.id, destination = nodeId, value = Irrelevant})
