@@ -200,6 +200,10 @@ findMajorParents: GraphIndex -> String ->  List NodeMeta
 findMajorParents graph nodeId =
   findDestinationMeta graph nodeId |> List.map .source |> List.map (findMajorParent graph)
 
+findMajorEdges: GraphIndex -> String ->  List EdgeMeta
+findMajorEdges graph nodeId =
+  findMajorParents graph nodeId |> List.map (\n -> {id= "", source = n.id, destination = nodeId, value = Irrelevant})
+
 uniqueStringList: List String -> List String
 uniqueStringList list =
   Set.fromList list |> Set.toList 
@@ -217,8 +221,8 @@ nodeIdToNode id =
 findMajorGraph: GraphIndex -> GraphMeta
 findMajorGraph graph =
   let
-      nodes = graph.majorNodes.root ++ graph.majorNodes.convergence |> Set.toList |> List.map findNodeMeta graph
-      edges = graph.majorNodes.convergence |> Set.toList |> List.map (findMajorParents graph) |> List.concat
+      nodes = Set.union graph.majorNodes.root graph.majorNodes.convergence |> Set.toList |> List.map (findNodeMeta graph)
+      edges = graph.majorNodes.convergence |> Set.toList |> List.map (findMajorEdges graph) |> List.concat
   in
       {
         nodes = nodes
