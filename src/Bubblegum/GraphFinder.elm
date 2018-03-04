@@ -1,4 +1,4 @@
-module Bubblegum.GraphFinder exposing(..)
+module Bubblegum.GraphFinder exposing(findNode, findEdgesBySource, findEdgesByDestination)
 
 {-| This library provides a directed graph model for representing relationships between UI components.
 

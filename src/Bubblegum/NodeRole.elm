@@ -1,4 +1,4 @@
-module Bubblegum.NodeRole exposing(..)
+module Bubblegum.NodeRole exposing(NodeRole(..), MajorNodes, findMajorNodes, findNodeRole)
 
 {-| This library provides a directed graph model for representing relationships between UI components.
 
