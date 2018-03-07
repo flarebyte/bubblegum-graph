@@ -55,20 +55,12 @@ parent: GraphPaths -> Path -> Maybe Path
 parent paths path=
   path.nodeIds |> List.tail |> Maybe.andThen (findPathByNodeIds paths)
 
-
-{-
-  Selects the grand parent if any
--}
-grandParent: GraphPaths -> Path -> Maybe Path
-grandParent paths path=
-  path.nodeIds |> List.tail |> Maybe.andThen (findPathByNodeIds paths)
-
 {-
    athena, zeus
 
 -}
-matchDescendant: List String -> Path -> Bool
-matchDescendant nodeIds path =
+matchDescendantOrSelf: List String -> Path -> Bool
+matchDescendantOrSelf nodeIds path =
  let
      sizeOfParentPath = List.length nodeIds
      sizeOfVisitedPath = List.length path.nodeIds
@@ -77,19 +69,28 @@ matchDescendant nodeIds path =
  in
     parentOfVisited == nodeIds
 
+matchDescendant: List String -> Path -> Bool
+matchDescendant nodeIds path =
+ let
+     sizeOfParentPath = List.length nodeIds
+     sizeOfVisitedPath = List.length path.nodeIds
+     diffSize = sizeOfVisitedPath - sizeOfParentPath
+     parentOfVisited = List.drop diffSize path.nodeIds
+ in
+    parentOfVisited == nodeIds && sizeOfParentPath /= sizeOfVisitedPath
+
 {-
   Selects all descendants
 -}
-descendant: GraphPaths -> Path -> List Path
-descendant paths path=
+descendants: GraphPaths -> Path -> List Path
+descendants paths path=
   List.filter (matchDescendant path.nodeIds) paths.paths
-
 {-
   Selects all descendants and itself
 -}
-descendantOrSelf: GraphPaths -> Path -> List Path
-descendantOrSelf paths path=
-  List.filter (matchDescendant path.nodeIds) paths.paths
+descendantsOrSelf: GraphPaths -> Path -> List Path
+descendantsOrSelf paths path=
+  List.filter (matchDescendantOrSelf path.nodeIds) paths.paths
 
 {-
   Selects all children
