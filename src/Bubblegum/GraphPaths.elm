@@ -21,6 +21,20 @@ type alias GraphPaths = {
   , idToPath: Dict Int Path
 }
 
+pathAsTuple: Path -> (Int, Path)
+pathAsTuple path =
+  (path.id, path)
+
+createGraphPaths: List Path -> GraphPaths
+createGraphPaths paths =
+  let
+        idToPath = paths |> List.map pathAsTuple |> Dict.fromList
+  in
+    {
+      paths = paths
+      , idToPath = idToPath
+    }
+
 findPathById: GraphPaths -> Int -> Maybe Path
 findPathById paths id =
   Dict.get id paths.idToPath
