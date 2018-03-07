@@ -33,12 +33,12 @@ all =
         [ describe "find path by id" <|
             [ test "for existing id" <|
                 \() ->
-                    Expect.equal (findPathById  myPaths 3) (Just path3)
+                    Expect.equal (byId myPaths 3) (Just path3)
             ]
             , describe "find path by nodes ids" <|
             [ test "for existing path" <|
                 \() ->
-                    Expect.equal (findPathByNodeIds  myPaths path3.nodeIds) (Just path3)
+                    Expect.equal (byNodeIds myPaths path3.nodeIds) (Just path3)
             ]
            , describe "find parent" <|
             [ test "when exists" <|
@@ -54,5 +54,10 @@ all =
             [ test "when exists" <|
                 \() ->
                     Expect.equal (descendantsOrSelf myPaths path4) ([path1, path2, path3, path4, path11, path12])
+            ]
+            , describe "find direct children" <|
+            [ test "when exists" <|
+                \() ->
+                    Expect.equal (children myPaths path4) ([path3, path11])
             ]
          ]

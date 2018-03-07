@@ -1,4 +1,4 @@
-module Bubblegum.GraphPaths exposing(..)
+module Bubblegum.GraphPaths exposing(Path, GraphPaths, createGraphPaths, byId, byNodeIds, parent, descendants, descendantsOrSelf, children)
 
 {-| This library provides a directed graph model for representing relationships between UI components.
 
@@ -35,8 +35,8 @@ createGraphPaths paths =
       , idToPath = idToPath
     }
 
-findPathById: GraphPaths -> Int -> Maybe Path
-findPathById paths id =
+byId: GraphPaths -> Int -> Maybe Path
+byId paths id =
   Dict.get id paths.idToPath
 
 
@@ -44,8 +44,8 @@ matchNodeIds: List String -> Path -> Bool
 matchNodeIds nodeIds path = path.nodeIds == nodeIds
 
 
-findPathByNodeIds: GraphPaths -> List String -> Maybe Path
-findPathByNodeIds paths nodeIds =
+byNodeIds: GraphPaths -> List String -> Maybe Path
+byNodeIds paths nodeIds =
   paths.paths |> List.filter (matchNodeIds nodeIds) |> List.head
 
 {-
@@ -53,7 +53,7 @@ findPathByNodeIds paths nodeIds =
 -}
 parent: GraphPaths -> Path -> Maybe Path
 parent paths path=
-  path.nodeIds |> List.tail |> Maybe.andThen (findPathByNodeIds paths)
+  path.nodeIds |> List.tail |> Maybe.andThen (byNodeIds paths)
 
 {-
    athena, zeus
@@ -79,6 +79,17 @@ matchDescendant nodeIds path =
  in
     parentOfVisited == nodeIds && sizeOfParentPath /= sizeOfVisitedPath
 
+matchChildren: List String -> Path -> Bool
+matchChildren nodeIds path =
+ let
+     sizeOfParentPath = List.length nodeIds
+     sizeOfVisitedPath = List.length path.nodeIds
+     diffSize = sizeOfVisitedPath - sizeOfParentPath
+     parentOfVisited = List.drop diffSize path.nodeIds
+ in
+    parentOfVisited == nodeIds && sizeOfVisitedPath == (sizeOfParentPath + 1)
+
+
 {-
   Selects all descendants
 -}
@@ -95,9 +106,9 @@ descendantsOrSelf paths path=
 {-
   Selects all children
 -}
-child: GraphPaths -> Path -> List Path
-child paths path=
-  List.filter (matchDescendant path.nodeIds) paths.paths
+children: GraphPaths -> Path -> List Path
+children paths path=
+  List.filter (matchChildren path.nodeIds) paths.paths
 
 
 
