@@ -48,3 +48,23 @@ fromStr key =
 toStr: ValueKey -> String
 toStr key =
     padInt(key.pathId) ++ ":" ++ (key.indices |> List.map padInt |> String.join "/")
+
+firstIndice: String -> Int
+firstIndice key =
+  fromStr key |> .indices |> List.head |> Maybe.withDefault 0
+
+incFirstIndice: List Int -> List Int
+incFirstIndice indices =
+  let
+    first = indices |> List.head |> Maybe.withDefault 0 |> (+) 1
+    rest = indices |> List.tail |> Maybe.withDefault []
+  in
+    first :: rest
+
+incValueKey: ValueKey -> ValueKey
+incValueKey key =
+  {key | indices = (incFirstIndice key.indices)}
+
+incrementKey: String -> String
+incrementKey key =
+  fromStr key |> incValueKey |> toStr

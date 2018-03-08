@@ -22,4 +22,14 @@ all =
                 \() ->
                     Expect.equal (toStr {pathId = 17, indices = [6,7777,8,9]}) ("017:006/7777/008/009")       
             ]
+            , describe "get the first indice" <|
+            [ test "the head indice" <|
+                \() ->
+                    Expect.equal (firstIndice "017:006/007/008/009") 6
+            ]
+            , describe "increment a key" <|
+            [ test "increment indice pointing at child or head" <|
+                \() ->
+                    Expect.equal (incrementKey "017:09/007/008/009") "017:010/007/008/009"
+            ]
         ]
