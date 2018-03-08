@@ -6,6 +6,7 @@ import NodeRoleTests
 import GraphIndexTests
 import MajorGraphTests
 import GraphPathsTests
+import ValueKeyTests
 import Test.Runner.Node exposing (run, TestProgram)
 import Test exposing (Test)
 import Json.Encode exposing (Value)
@@ -20,6 +21,7 @@ all =
         , GraphIndexTests.all
         , MajorGraphTests.all
         , GraphPathsTests.all
+        , ValueKeyTests.all
         ]
 
 main : TestProgram
