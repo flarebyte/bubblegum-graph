@@ -1,4 +1,4 @@
-module Bubblegum.ValueKey exposing(fromStr,toStr, firstIndice, incrementKey)
+module Bubblegum.ValueKey exposing(fromStr,toStr, childIndice, incrementKey)
 
 {-| This library provides a directed graph model for representing relationships between UI components.
 
@@ -42,15 +42,15 @@ fromStr key =
   in
   {
   pathId = Tuple.first a |> parsePaddedInt
-  , indices = Tuple.second a |> String.split "/" |> List.map parsePaddedInt
+  , indices = Tuple.second a |> String.split "/" |> List.map parsePaddedInt |> List.reverse
   }
 
 toStr: ValueKey -> String
 toStr key =
-    padInt(key.pathId) ++ ":" ++ (key.indices |> List.map padInt |> String.join "/")
+    padInt(key.pathId) ++ ":" ++ (key.indices |> List.reverse |> List.map padInt |> String.join "/")
 
-firstIndice: String -> Int
-firstIndice key =
+childIndice: String -> Int
+childIndice key =
   fromStr key |> .indices |> List.head |> Maybe.withDefault 0
 
 incFirstIndice: Int -> List Int -> List Int

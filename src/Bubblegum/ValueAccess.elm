@@ -28,4 +28,6 @@ get: Values  m-> String -> Maybe m
 get values id =
   Dict.get id values.keyToValue
 
-
+getKeysByQuery: Values  m-> String -> List String
+getKeysByQuery values query=
+  []
