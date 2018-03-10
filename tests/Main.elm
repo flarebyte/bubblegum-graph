@@ -7,6 +7,7 @@ import GraphIndexTests
 import MajorGraphTests
 import GraphPathsTests
 import ValueKeyTests
+import ValueAccessTests
 import Test.Runner.Node exposing (run, TestProgram)
 import Test exposing (Test)
 import Json.Encode exposing (Value)
@@ -22,6 +23,7 @@ all =
         , MajorGraphTests.all
         , GraphPathsTests.all
         , ValueKeyTests.all
+        , ValueAccessTests.all
         ]
 
 main : TestProgram

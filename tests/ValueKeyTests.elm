@@ -7,7 +7,7 @@ import Bubblegum.ValueKey exposing (..)
 
 all : Test
 all =
-    describe "Bubblegum.valueKey"
+    describe "Bubblegum.ValueKey"
         [ describe "from string" <|
             [ test "for a valid key with 3 digits padding" <|
                 \() ->
