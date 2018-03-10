@@ -28,8 +28,11 @@ all =
                     Expect.equal (firstIndice "017:006/007/008/009") 6
             ]
             , describe "increment a key" <|
-            [ test "increment indice pointing at child or head" <|
+            [ test "by +1" <|
                 \() ->
-                    Expect.equal (incrementKey "017:09/007/008/009") "017:010/007/008/009"
+                    Expect.equal (incrementKey 1 "017:09/007/008/009") "017:010/007/008/009"
+               , test "by -1" <|
+                \() ->
+                    Expect.equal (incrementKey -1 "017:10/007/008/009") "017:009/007/008/009"     
             ]
         ]

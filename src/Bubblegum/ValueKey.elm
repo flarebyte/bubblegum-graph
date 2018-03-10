@@ -1,4 +1,4 @@
-module Bubblegum.ValueKey exposing(..)
+module Bubblegum.ValueKey exposing(fromStr,toStr, firstIndice, incrementKey)
 
 {-| This library provides a directed graph model for representing relationships between UI components.
 
@@ -53,18 +53,18 @@ firstIndice: String -> Int
 firstIndice key =
   fromStr key |> .indices |> List.head |> Maybe.withDefault 0
 
-incFirstIndice: List Int -> List Int
-incFirstIndice indices =
+incFirstIndice: Int -> List Int -> List Int
+incFirstIndice delta indices =
   let
-    first = indices |> List.head |> Maybe.withDefault 0 |> (+) 1
+    first = indices |> List.head |> Maybe.withDefault 0 |> (+) delta
     rest = indices |> List.tail |> Maybe.withDefault []
   in
     first :: rest
 
-incValueKey: ValueKey -> ValueKey
-incValueKey key =
-  {key | indices = (incFirstIndice key.indices)}
+incValueKey: Int -> ValueKey -> ValueKey
+incValueKey delta key =
+  {key | indices = (incFirstIndice delta key.indices)}
 
-incrementKey: String -> String
-incrementKey key =
-  fromStr key |> incValueKey |> toStr
+incrementKey: Int -> String -> String
+incrementKey delta key =
+  fromStr key |> (incValueKey delta)|> toStr
