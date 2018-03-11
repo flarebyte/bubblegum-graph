@@ -4,6 +4,18 @@ import Test exposing (describe, test, Test)
 import Expect
 import Bubblegum.ValueKey exposing (..)
 
+myKeys = [
+    "001:001/001",
+    "001:001/002"
+    ,"001:001/001/001/001"
+    , "001:001/001/001/002"
+    , "001:001/001/001/003"
+    , "001:001/001/002/001"
+    , "001:001/001/003/001"
+    , "001:001/002/001/001"
+    , "001:001/003/001/001"
+    , "001:002/001/001/001"
+    ]
 
 all : Test
 all =
@@ -34,5 +46,15 @@ all =
                , test "by -1" <|
                 \() ->
                     Expect.equal (incrementKey -1 "017:010/007/008/009") "017:010/007/008/008"     
+            ]
+            , describe "descendants of key" <|
+            [ test "with grand children" <|
+                \() ->
+                    Expect.equal (descendants myKeys "001:001/001") ["001:001/001/001/001","001:001/001/001/002","001:001/001/001/003","001:001/001/002/001","001:001/001/003/001"]
+            ]
+            , describe "descendants or self of key" <|
+            [ test "with grand children" <|
+                \() ->
+                    Expect.equal (descendantsOrSelf myKeys "001:001/001") ["001:001/001","001:001/001/001/001","001:001/001/001/002","001:001/001/001/003","001:001/001/002/001","001:001/001/003/001"]
             ]
         ]

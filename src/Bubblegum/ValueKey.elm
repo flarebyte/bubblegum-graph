@@ -1,4 +1,4 @@
-module Bubblegum.ValueKey exposing(fromStr,toStr, childIndice, incrementKey)
+module Bubblegum.ValueKey exposing(fromStr,toStr, childIndice, incrementKey, descendants, descendantsOrSelf)
 
 {-| This library provides a directed graph model for representing relationships between UI components.
 
@@ -68,3 +68,19 @@ incValueKey delta key =
 incrementKey: Int -> String -> String
 incrementKey delta key =
   fromStr key |> (incValueKey delta)|> toStr
+
+asIndices: String -> String
+asIndices key =
+  String.dropLeft 4 key 
+
+matchDescendantOrSelf: String -> String -> Bool
+matchDescendantOrSelf parent tested =
+  String.startsWith (asIndices parent) (asIndices tested)
+
+descendantsOrSelf: List String -> String -> List String
+descendantsOrSelf keys key =
+  List.filter (matchDescendantOrSelf key) keys
+
+descendants: List String -> String -> List String
+descendants keys key =
+ descendantsOrSelf keys key |> List.filter (\k -> k /= key)
