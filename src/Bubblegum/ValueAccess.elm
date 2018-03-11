@@ -8,26 +8,31 @@ module Bubblegum.ValueAccess exposing(..)
 -}
 
 import Dict exposing(Dict)
+import Tuple exposing(first)
 
 {-| 
 -}
 type alias Values m = {
-  values: List (String, m)
-  , keyToValue: Dict String m
+  keyToValue: Dict String (String, m)
 }
 
-createValues: List (String, m) -> Values m
-createValues values =
-  {
-    values = values
-    , keyToValue = values |>  Dict.fromList
-  }
-
-
-get: Values  m-> String -> Maybe m
+get: Values  m-> String -> Maybe (String , m)
 get values id =
   Dict.get id values.keyToValue
+
+set: Values  m-> (String, m) -> Values  m
+set values keyValue =
+   { keyToValue = Dict.insert (first keyValue) keyValue values.keyToValue }
+
+fromList: List (String, m) ->  Values  m
+fromList values =
+ { keyToValue =  values |> List.map (\v -> ((first v), v)) |> Dict.fromList }
+
+-- union: Values  m -> Values  m -> Values  m
+-- union a b =
+--   Dict.union 
 
 getKeysByQuery: Values  m-> String -> List String
 getKeysByQuery values query=
   []
+

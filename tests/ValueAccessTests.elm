@@ -8,7 +8,7 @@ val: String -> (String, String)
 val value =
     (value, value)
 
-myValues = createValues [
+myValues = fromList [
     val "001:001/001/001/001"
     , val "001:002/001/001/001"
     , val "001:003/001/001/001"
@@ -25,7 +25,7 @@ all =
         [ describe "get a value" <|
             [ test "for existing key" <|
                 \() ->
-                    Expect.equal (get myValues "001:003/001/001/001") (Just "001:003/001/001/001")
+                    Expect.equal (get myValues "001:003/001/001/001") (Just (val "001:003/001/001/001"))
             ]
             , describe "get a value" <|
             [ test "get key by query" <|
