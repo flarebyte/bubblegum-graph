@@ -8,7 +8,7 @@ module Bubblegum.ValueAccess exposing(..)
 -}
 
 import Dict exposing(Dict)
-import Tuple exposing(first)
+import Tuple exposing(first, second)
 import Bubblegum.ValueKey as ValueKey
 
 {-| 
@@ -35,8 +35,16 @@ keys: Values  m -> List String
 keys values =
   Dict.keys values
 
-descendants: Values  m-> String -> Values  m
+matchAnyKeyOf: List String -> (String, m) -> Bool
+matchAnyKeyOf keys keyValue =
+  List.member (first keyValue) keys
+
+getMany: Values  m-> List String -> List (String , m)
+getMany values keys =
+  Dict.toList values |> List.map second |> List.filter (matchAnyKeyOf keys)
+
+descendants: Values  m -> String -> List (String, m)
 descendants values key=
-  Dict.keys values |> ValueKey.descendants
+   ValueKey.descendants (Dict.keys values) key |> getMany values
 
 

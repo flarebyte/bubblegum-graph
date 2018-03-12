@@ -30,6 +30,6 @@ all =
             , describe "get descendants" <|
             [ test "descendants" <|
                 \() ->
-                    Expect.equal (descendants myValues "001:003") ( fromList [val "001:003/001/001/001"])
+                    Expect.equal (descendants myValues "001:003") (  [val "001:003/001/001/001"])
             ]
         ]
