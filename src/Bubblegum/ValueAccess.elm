@@ -19,6 +19,16 @@ get: Values  m-> String -> Maybe (String , m)
 get values id =
   Dict.get id values
 
+isJust : Maybe a -> Bool
+isJust m =
+  case m of
+    Nothing -> False
+    Just _  -> True
+
+has: Values  m-> String -> Bool
+has values id =
+  get values id |> isJust
+
 set: Values  m-> (String, m) -> Values  m
 set values keyValue =
    Dict.insert (first keyValue) keyValue values
@@ -26,6 +36,10 @@ set values keyValue =
 fromList: List (String, m) ->  Values  m
 fromList values =
  values |> List.map (\v -> ((first v), v)) |> Dict.fromList
+
+toList: Values  m -> List (String, m)
+toList values =
+  Dict.toList values |> List.map second 
 
 union: Values  m -> Values  m -> Values  m
 union a b =
@@ -39,9 +53,13 @@ matchAnyKeyOf: List String -> (String, m) -> Bool
 matchAnyKeyOf keys keyValue =
   List.member (first keyValue) keys
 
+remove: Values  m -> String -> Values  m
+remove values key =
+  Dict.remove key values
+
 getMany: Values  m-> List String -> List (String , m)
 getMany values keys =
-  Dict.toList values |> List.map second |> List.filter (matchAnyKeyOf keys)
+  toList values |> List.filter (matchAnyKeyOf keys)
 
 descendants: Values  m -> String -> List (String, m)
 descendants values key=
