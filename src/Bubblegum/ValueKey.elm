@@ -1,4 +1,4 @@
-module Bubblegum.ValueKey exposing(fromStr,toStr, childIndice, incrementKey, descendants, descendantsOrSelf)
+module Bubblegum.ValueKey exposing(fromStr,toStr, childIndice, incrementKey, isDescendantOrSelf, isDescendant, isAncestor)
 
 {-| This library provides a directed graph model for representing relationships between UI components.
 
@@ -73,14 +73,14 @@ asIndices: String -> String
 asIndices key =
   String.dropLeft 4 key 
 
-matchDescendantOrSelf: String -> String -> Bool
-matchDescendantOrSelf parent tested =
-  String.startsWith (asIndices parent) (asIndices tested)
+isDescendantOrSelf: String -> String -> Bool
+isDescendantOrSelf self tested =
+  String.startsWith (asIndices self) (asIndices tested)
 
-descendantsOrSelf: List String -> String -> List String
-descendantsOrSelf keys key =
-  List.filter (matchDescendantOrSelf key) keys
+isDescendant: String -> String -> Bool
+isDescendant self tested =
+  isDescendantOrSelf self tested && self /= tested
 
-descendants: List String -> String -> List String
-descendants keys key =
- descendantsOrSelf keys key |> List.filter (\k -> k /= key)
+isAncestor:  String -> String -> Bool
+isAncestor self tested =
+  String.startsWith (asIndices tested) (asIndices self) && self /= tested

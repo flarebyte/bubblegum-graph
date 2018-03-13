@@ -1,4 +1,4 @@
-module Bubblegum.ValueAccess exposing(..)
+module Bubblegum.ValueAccess exposing(get, has, insert, fromList, toList, union, keys, remove, update)
 
 {-| This library provides a directed graph model for representing relationships between UI components.
 
@@ -9,7 +9,6 @@ module Bubblegum.ValueAccess exposing(..)
 
 import Dict exposing(Dict)
 import Tuple exposing(first, second)
-import Bubblegum.ValueKey as ValueKey
 
 {-| 
 -}
@@ -29,8 +28,8 @@ has: Values  m-> String -> Bool
 has values id =
   get values id |> isJust
 
-set: Values  m-> (String, m) -> Values  m
-set values keyValue =
+insert: Values  m-> (String, m) -> Values  m
+insert values keyValue =
    Dict.insert (first keyValue) keyValue values
 
 fromList: List (String, m) ->  Values  m
@@ -39,7 +38,7 @@ fromList values =
 
 toList: Values  m -> List (String, m)
 toList values =
-  Dict.toList values |> List.map second 
+  Dict.values values
 
 union: Values  m -> Values  m -> Values  m
 union a b =
@@ -49,20 +48,10 @@ keys: Values  m -> List String
 keys values =
   Dict.keys values
 
-matchAnyKeyOf: List String -> (String, m) -> Bool
-matchAnyKeyOf keys keyValue =
-  List.member (first keyValue) keys
-
 remove: Values  m -> String -> Values  m
 remove values key =
   Dict.remove key values
 
-getMany: Values  m-> List String -> List (String , m)
-getMany values keys =
-  toList values |> List.filter (matchAnyKeyOf keys)
-
-descendants: Values  m -> String -> List (String, m)
-descendants values key=
-   ValueKey.descendants (Dict.keys values) key |> getMany values
-
-
+update:  Values  m -> String -> (Maybe (String, m) -> Maybe (String, m)) -> Values  m
+update values key transf =
+  Dict.update key transf values

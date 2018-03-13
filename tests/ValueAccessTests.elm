@@ -27,9 +27,4 @@ all =
                 \() ->
                     Expect.equal (get myValues "001:003/001/001/001") (Just (val "001:003/001/001/001"))
             ]
-            , describe "get descendants" <|
-            [ test "descendants" <|
-                \() ->
-                    Expect.equal (descendants myValues "001:003") (  [val "001:003/001/001/001"])
-            ]
         ]

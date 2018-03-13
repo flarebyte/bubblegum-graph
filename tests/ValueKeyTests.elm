@@ -5,8 +5,10 @@ import Expect
 import Bubblegum.ValueKey exposing (..)
 
 myKeys = [
-    "001:001/001",
-    "001:001/002"
+    "001:001/001/001"
+    ,"001:001/001"
+    ,"001:001"
+    ,"001:001/002"
     ,"001:001/001/001/001"
     , "001:001/001/001/002"
     , "001:001/001/001/003"
@@ -50,11 +52,16 @@ all =
             , describe "descendants of key" <|
             [ test "with grand children" <|
                 \() ->
-                    Expect.equal (descendants myKeys "001:001/001") ["001:001/001/001/001","001:001/001/001/002","001:001/001/001/003","001:001/001/002/001","001:001/001/003/001"]
+                    Expect.equal (List.filter (isDescendant "001:001/001") myKeys) ["001:001/001/001","001:001/001/001/001","001:001/001/001/002","001:001/001/001/003","001:001/001/002/001","001:001/001/003/001"]
             ]
             , describe "descendants or self of key" <|
-            [ test "with grand children" <|
+            [ test "with grand children or self" <|
                 \() ->
-                    Expect.equal (descendantsOrSelf myKeys "001:001/001") ["001:001/001","001:001/001/001/001","001:001/001/001/002","001:001/001/001/003","001:001/001/002/001","001:001/001/003/001"]
+                    Expect.equal (List.filter (isDescendantOrSelf "001:001/001") myKeys) ["001:001/001/001","001:001/001","001:001/001/001/001","001:001/001/001/002","001:001/001/001/003","001:001/001/002/001","001:001/001/003/001"]
+            ]
+            , describe "ancestor of a key" <|
+            [ test "when grand parents" <|
+                \() ->
+                    Expect.equal (List.filter (isAncestor "001:001/001/001/001") myKeys) ["001:001/001/001","001:001/001","001:001"]
             ]
         ]
