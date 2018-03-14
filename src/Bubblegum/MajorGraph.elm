@@ -17,7 +17,7 @@ type alias GraphMeta = Graph NodeRole Irrelevant
 
 edgeFromTuple: (String, String) -> Edge Irrelevant
 edgeFromTuple edge = 
-  {id= "", source = Tuple.first(edge), destination = Tuple.second(edge), value = Irrelevant}
+  {source = Tuple.first(edge), destination = Tuple.second(edge), value = Irrelevant}
 
 uniqTupleList: List (String, String) -> List (String, String)
 uniqTupleList list =

@@ -10,8 +10,7 @@ module Bubblegum.GraphBuilder exposing(createNode, createEdge, createGraph, Edge
 {-| The core representation of a value.
 -}
 type alias Edge eData= {
-    id: String --TODO delete id
-    , source: String
+    source: String
     , destination: String
     , value: eData
  }
@@ -44,11 +43,10 @@ createNode id nodeData=
 
 {-| Creates a edge.
 -}
-createEdge: String -> String -> String -> eData -> Edge eData
-createEdge id source destination edgeData=
+createEdge: String -> String -> eData -> Edge eData
+createEdge source destination edgeData=
   {
-    id = id
-    , source = source
+    source = source
     , destination = destination
     , value = edgeData
  }

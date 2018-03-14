@@ -9,12 +9,10 @@ asNode: Int -> String
 asNode num =
     "node_" ++ toString(num)
 
-type alias Edgy = (Int, Int)
+createSimpleEdge: (Int, Int) -> Edge String
+createSimpleEdge edge = createEdge (asNode (Tuple.first edge)) (asNode (Tuple.second edge)) (["edge", toString((Tuple.first edge)), toString(Tuple.second edge)] |> String.join "_")
 
-createSimpleEdge: Edgy -> Edge String
-createSimpleEdge edge = createEdge (["edge", toString(Tuple.first edge), toString(Tuple.second edge)] |> String.join "_") (asNode (Tuple.first edge)) (asNode (Tuple.second edge)) (["edge_value", toString((Tuple.first edge)), toString(Tuple.second edge)] |> String.join "_")
-
-createEdges: List Edgy -> List (Edge String)
+createEdges: List (Int, Int) -> List (Edge String)
 createEdges edges =
     edges |> List.map createSimpleEdge
 

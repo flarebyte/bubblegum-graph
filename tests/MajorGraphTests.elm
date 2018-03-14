@@ -23,9 +23,9 @@ all =
                  \() ->
                     Expect.equal (myMajorGraph |> .edges) (
                         [
-                            createEdge "" "node_1" "node_15" Irrelevant
-                            , createEdge "" "node_20" "node_15" Irrelevant
-                            , createEdge "" "node_1" "node_20" Irrelevant
+                            createEdge "node_1" "node_15" Irrelevant
+                            , createEdge "node_20" "node_15" Irrelevant
+                            , createEdge "node_1" "node_20" Irrelevant
                          ]
                   )
             ]
