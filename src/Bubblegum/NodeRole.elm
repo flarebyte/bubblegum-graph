@@ -8,7 +8,7 @@ module Bubblegum.NodeRole exposing(NodeRole(..), MajorNodes, toMajorNodes, toNod
 -}
 import Set exposing (Set)
 import Bubblegum.Graph exposing (Graph)
-import Bubblegum.GraphFinder exposing (findEdgesByDestination, findEdgesBySource)
+import Bubblegum.GraphFinder as GraphFinder
 
 type NodeRole =
   RootNode
@@ -31,8 +31,8 @@ type alias MajorNodes = {
 findRootNodeIds: Graph nData eData -> Set String
 findRootNodeIds graph =
   let
-      findParents = findEdgesByDestination graph
-      findChildren = findEdgesBySource graph
+      findParents = GraphFinder.findEdgesByDestination graph
+      findChildren = GraphFinder.findEdgesBySource graph
   in
       graph.nodes 
         |> List.filter (\node -> findParents node.id |> List.isEmpty ) 
@@ -46,8 +46,8 @@ findRootNodeIds graph =
 findLeafNodeIds: Graph nData eData -> Set String
 findLeafNodeIds graph =
   let
-      findParents = findEdgesByDestination graph
-      findChildren = findEdgesBySource graph
+      findParents = GraphFinder.findEdgesByDestination graph
+      findChildren = GraphFinder.findEdgesBySource graph
   in
       graph.nodes 
         |> List.filter (\node -> findChildren node.id |> List.isEmpty)         
@@ -65,8 +65,8 @@ greaterThanOne list =
 findConvergenceNodeIds: Graph nData eData -> Set String
 findConvergenceNodeIds graph =
   let
-      findParents = findEdgesByDestination graph
-      findChildren = findEdgesBySource graph
+      findParents = GraphFinder.findEdgesByDestination graph
+      findChildren = GraphFinder.findEdgesBySource graph
   in
       graph.nodes 
         |> List.filter (\node -> findParents node.id |> greaterThanOne )         
