@@ -1,6 +1,6 @@
 port module Main exposing (..)
 
-import GraphFinderTests
+import GraphTests
 import NodeRoleTests
 import GraphIndexTests
 import MajorGraphTests
@@ -15,7 +15,7 @@ import Json.Encode exposing (Value)
 all : Test
 all =
     Test.concat
-        [ GraphFinderTests.all
+        [ GraphTests.all
         , NodeRoleTests.all
         , GraphIndexTests.all
         , MajorGraphTests.all

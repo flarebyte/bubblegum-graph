@@ -1,8 +1,8 @@
-module GraphFinderTests exposing (..)
+module GraphTests exposing (..)
 
 import Test exposing (describe, test, Test)
 import Expect
-import Bubblegum.GraphFinder exposing (..)
+import Bubblegum.Graph exposing (..)
 import FixtureHelper exposing (createSimpleGraph)
 
 import List
