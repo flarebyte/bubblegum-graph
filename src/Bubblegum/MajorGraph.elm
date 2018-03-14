@@ -9,7 +9,10 @@ module Bubblegum.MajorGraph exposing(toMajorGraph)
 import List
 import Set exposing (Set)
 import Tuple
-import Bubblegum.GraphBuilder exposing (Graph, Node, Edge, Irrelevant(..), createEdge)
+import Bubblegum.Irrelevant exposing(..)
+import Bubblegum.Node exposing(..)
+import Bubblegum.Edge exposing(..)
+import Bubblegum.Graph exposing (Graph)
 import Bubblegum.GraphIndex exposing (GraphIndex, EdgeMeta, findNodeMeta, findMajorParents)
 import Bubblegum.NodeRole exposing (NodeRole)
 

@@ -2,7 +2,7 @@ module GraphIndexTests exposing (..)
 
 import Test exposing (describe, test, Test)
 import Expect
-import Bubblegum.GraphBuilder exposing (createNode)
+import Bubblegum.Node as Node
 import Bubblegum.NodeRole exposing(..)
 import Bubblegum.GraphIndex exposing (..)
 import FixtureHelper exposing (createSimpleGraph)
@@ -16,12 +16,12 @@ all =
         [  describe "find the major parents" <|
             [ test "identify the immediate parent" <|
                 \() ->
-                    Expect.equal (findMajorParents myGraphIndex "node_16") ([createNode "node_15" ConvergenceNode])
+                    Expect.equal (findMajorParents myGraphIndex "node_16") ([Node.create "node_15" ConvergenceNode])
               , test "identify parent of 15" <|
                 \() ->
-                    Expect.equal (findMajorParents myGraphIndex "node_15") ([createNode "node_1" RootNode, createNode "node_20" ConvergenceNode])
+                    Expect.equal (findMajorParents myGraphIndex "node_15") ([Node.create "node_1" RootNode, Node.create "node_20" ConvergenceNode])
               , test "identify parent of 20" <|
                 \() ->
-                    Expect.equal (findMajorParents myGraphIndex "node_20") ([createNode "node_1" RootNode, createNode "node_1" RootNode])
+                    Expect.equal (findMajorParents myGraphIndex "node_20") ([Node.create "node_1" RootNode, Node.create "node_1" RootNode])
             ]
         ]

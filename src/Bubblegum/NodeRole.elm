@@ -7,7 +7,7 @@ module Bubblegum.NodeRole exposing(NodeRole(..), MajorNodes, toMajorNodes, toNod
 
 -}
 import Set exposing (Set)
-import Bubblegum.GraphBuilder exposing (Graph)
+import Bubblegum.Graph exposing (Graph)
 import Bubblegum.GraphFinder exposing (findEdgesByDestination, findEdgesBySource)
 
 type NodeRole =

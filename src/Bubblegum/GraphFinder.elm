@@ -8,7 +8,9 @@ module Bubblegum.GraphFinder exposing(findNode, findEdgesBySource, findEdgesByDe
 -}
 import List
 import Maybe
-import Bubblegum.GraphBuilder exposing (Graph, Node, Edge, createEdge)
+import Bubblegum.Node exposing(..)
+import Bubblegum.Edge exposing(..)
+import Bubblegum.Graph exposing (Graph)
 
 {-| find node model.
   linear time O(n)

@@ -1,6 +1,8 @@
 module FixtureHelper exposing (createSimpleGraph)
 
-import Bubblegum.GraphBuilder exposing (..)
+import Bubblegum.Node as Node exposing (..)
+import Bubblegum.Edge as Edge exposing (..)
+import Bubblegum.Graph as Graph exposing (..)
 
 import List
 import Tuple
@@ -10,7 +12,7 @@ asNode num =
     "node_" ++ toString(num)
 
 createSimpleEdge: (Int, Int) -> Edge String
-createSimpleEdge edge = createEdge (asNode (Tuple.first edge)) (asNode (Tuple.second edge)) (["edge", toString((Tuple.first edge)), toString(Tuple.second edge)] |> String.join "_")
+createSimpleEdge edge = Edge.create (asNode (Tuple.first edge)) (asNode (Tuple.second edge)) (["edge", toString((Tuple.first edge)), toString(Tuple.second edge)] |> String.join "_")
 
 createEdges: List (Int, Int) -> List (Edge String)
 createEdges edges =
@@ -19,11 +21,11 @@ createEdges edges =
 createSimpleGraph: Graph String String
 createSimpleGraph = 
     let
-        simpleNodes=List.range 0 25 |> List.map (\i -> createNode (asNode i) (asNode i))
+        simpleNodes=List.range 0 25 |> List.map (\i -> Node.create (asNode i) (asNode i))
         simpleEdges =  createEdges [
             (1,2), (2,3), (3,4), (3,5), (3, 10), (5, 6), (6, 7), (6, 8), (5, 20), (10, 20), (6, 15)
             , (15, 16), (16, 17), (16, 18), (16, 4)
             , (20, 7), (20, 15)
         ]       
     in
-        createGraph simpleNodes simpleEdges
+        Graph.create simpleNodes simpleEdges

@@ -2,7 +2,8 @@ module MajorGraphTests exposing (..)
 
 import Test exposing (describe, test, Test)
 import Expect
-import Bubblegum.GraphBuilder exposing (..)
+import Bubblegum.Irrelevant exposing(..)
+import Bubblegum.Edge as Edge exposing(..)
 import Bubblegum.MajorGraph exposing(..)
 import Bubblegum.GraphIndex exposing (..)
 import FixtureHelper exposing (createSimpleGraph)
@@ -23,9 +24,9 @@ all =
                  \() ->
                     Expect.equal (myMajorGraph |> .edges) (
                         [
-                            createEdge "node_1" "node_15" Irrelevant
-                            , createEdge "node_20" "node_15" Irrelevant
-                            , createEdge "node_1" "node_20" Irrelevant
+                            Edge.create  "node_1" "node_15" Irrelevant
+                            , Edge.create "node_20" "node_15" Irrelevant
+                            , Edge.create "node_1" "node_20" Irrelevant
                          ]
                   )
             ]

@@ -9,7 +9,10 @@ module Bubblegum.GraphIndex exposing(toGraphIndex, findMajorParents, GraphIndex,
 import List
 import Maybe
 import Dict exposing (Dict)
-import Bubblegum.GraphBuilder exposing (Graph, Node, Edge, Irrelevant(..), createEdge )
+import Bubblegum.Irrelevant exposing(..)
+import Bubblegum.Node exposing(..)
+import Bubblegum.Edge exposing(..)
+import Bubblegum.Graph exposing (Graph)
 import Bubblegum.NodeRole exposing(NodeRole(..), MajorNodes, toNodeRole, toMajorNodes)
 
 type alias NodeMeta = Node NodeRole
