@@ -11,7 +11,7 @@ myGraph = createSimpleGraph
 
 all : Test
 all =
-    describe "Bubblegum.GraphFinder"
+    describe "Bubblegum.Graph"
         [describe "find nodes" <|
             [ test "find a node by id" <|
                 \() ->
@@ -20,7 +20,7 @@ all =
         , describe "find edges" <|
             [ test "find edges by a source node" <|
                 \() ->
-                    Expect.equal (findEdgesBySource myGraph "node_3" |> List.map .value) (["edge_3_4", "edge_3_5", "edge_3_10"]) 
+                    Expect.equal (findEdgesBySource myGraph "node_3" |> List.map .value) (["edge_3_10","edge_3_4","edge_3_5"]) 
             , test "find edges by a destination node" <|
                 \() ->
                     Expect.equal (findEdgesByDestination myGraph "node_5" |> List.map .value) (["edge_3_5"]) 

@@ -23,11 +23,11 @@ all =
                   )
                 , test "gets the right edges" <|
                  \() ->
-                    Expect.equal (myMajorGraph |> .edges) (
+                    Expect.equal (Graph.toEdgeList myMajorGraph) (
                         [
                             Edge.create  "node_1" "node_15" Irrelevant
-                            , Edge.create "node_20" "node_15" Irrelevant
                             , Edge.create "node_1" "node_20" Irrelevant
+                            , Edge.create "node_20" "node_15" Irrelevant
                          ]
                   )
             ]

@@ -49,8 +49,8 @@ toGraphIndex graph =
   let
     majorNodes = toMajorNodes graph
     nodes = Graph.toNodeList graph |> List.map (\n-> (n.id, {id = n.id, value = toNodeRole majorNodes n.id})) |> Dict.fromList
-    sourceEdges = graph.edges |> List.map (\e -> {e | value = Irrelevant}) |> groupBy .source
-    destEdges = graph.edges |> List.map (\e -> {e | value = Irrelevant}) |> groupBy .destination
+    sourceEdges = Graph.toEdgeList graph |> List.map (\e -> {e | value = Irrelevant}) |> groupBy .source
+    destEdges = Graph.toEdgeList graph |> List.map (\e -> {e | value = Irrelevant}) |> groupBy .destination
   in
     {
       nodes = nodes

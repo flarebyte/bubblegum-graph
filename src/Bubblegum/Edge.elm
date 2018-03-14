@@ -1,4 +1,4 @@
-module Bubblegum.Edge exposing(Edge, toTuple, create)
+module Bubblegum.Edge exposing(Edge, toTuple, fromTuple, create)
 
 {-| This library provides a directed graph model for representing relationships between UI components.
 
@@ -6,6 +6,7 @@ module Bubblegum.Edge exposing(Edge, toTuple, create)
 @docs createNode, createEdge, createGraph
 
 -}
+import Tuple exposing (first, second)
 
 {-| The core representation of a value.
 -}
@@ -14,10 +15,6 @@ type alias Edge eData= {
     , destination: String
     , value: eData
  }
-
-toTuple: Edge eData -> (String, String)
-toTuple edge =
-  (edge.source, edge.destination)
 
 {-| Creates a edge.
 -}
@@ -28,4 +25,12 @@ create source destination edgeData=
     , destination = destination
     , value = edgeData
  }
+
+toTuple: Edge eData -> ((String, String), Edge eData)
+toTuple edge =
+  ((edge.source, edge.destination), edge)
+
+fromTuple: ((String, String), Edge eData) -> Edge eData
+fromTuple tuple =
+  second(tuple)
 

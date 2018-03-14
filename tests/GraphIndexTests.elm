@@ -19,7 +19,7 @@ all =
                     Expect.equal (findMajorParents myGraphIndex "node_16") ([Node.create "node_15" ConvergenceNode])
               , test "identify parent of 15" <|
                 \() ->
-                    Expect.equal (findMajorParents myGraphIndex "node_15") ([Node.create "node_1" RootNode, Node.create "node_20" ConvergenceNode])
+                    Expect.equal (findMajorParents myGraphIndex "node_15") ([Node.create "node_20" ConvergenceNode, Node.create "node_1" RootNode])
               , test "identify parent of 20" <|
                 \() ->
                     Expect.equal (findMajorParents myGraphIndex "node_20") ([Node.create "node_1" RootNode, Node.create "node_1" RootNode])
