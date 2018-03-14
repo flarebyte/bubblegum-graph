@@ -1,4 +1,4 @@
-module Bubblegum.Graph exposing(Graph, create, findNode, findEdgesBySource, findEdgesByDestination)
+module Bubblegum.Graph exposing(Graph, create, findNode, toNodeList, findEdgesBySource, findEdgesByDestination)
 
 {-| This library provides a directed graph model for representing relationships between UI components.
 
@@ -7,14 +7,15 @@ module Bubblegum.Graph exposing(Graph, create, findNode, findEdgesBySource, find
 
 -}
 
-import Bubblegum.Node exposing(..)
-import Bubblegum.Edge exposing(..)
+import Dict exposing(Dict)
+import Bubblegum.Node as Node exposing(..)
+import Bubblegum.Edge as Edge exposing(..)
 
 
 {-| The core representation of a value.
 -}
 type alias Graph nData eData = {
-    nodes: List  (Node nData)
+    nodes: Dict String (Node nData)
     , edges: List (Edge eData)
   }
 
@@ -23,16 +24,19 @@ type alias Graph nData eData = {
 create: List  (Node nData) -> List (Edge eData) -> Graph nData eData
 create nodes edges=
   {
-    nodes = nodes
+    nodes = nodes |> List.map Node.toTuple |> Dict.fromList
     , edges = edges
   }
 
 {-| find node model.
-  linear time O(n)
 -}
 findNode: Graph nData eData -> String -> Maybe (Node nData)
 findNode graph id =
-  graph.nodes |> List.filter (\n -> n.id == id)|> List.head
+  Dict.get id graph.nodes
+
+toNodeList: Graph nData eData -> List  (Node nData)
+toNodeList graph =
+  Dict.values graph.nodes
 
 {-| find edge models by source.
   linear time O(n)

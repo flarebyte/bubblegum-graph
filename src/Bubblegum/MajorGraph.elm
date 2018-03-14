@@ -12,7 +12,7 @@ import Tuple
 import Bubblegum.Irrelevant exposing(..)
 import Bubblegum.Node exposing(..)
 import Bubblegum.Edge exposing(..)
-import Bubblegum.Graph exposing (Graph)
+import Bubblegum.Graph as Graph exposing (Graph)
 import Bubblegum.GraphIndex exposing (GraphIndex, EdgeMeta, findNodeMeta, findMajorParents)
 import Bubblegum.NodeRole exposing (NodeRole)
 
@@ -39,9 +39,6 @@ toMajorGraph graph =
       nodes = graph.majorNodes.major |> Set.toList |> List.map (findNodeMeta graph)
       edges = graph.majorNodes.convergence |> Set.toList |> List.map (findMajorEdges graph) |> List.concat
   in
-      {
-        nodes = nodes
-        , edges = edges
-      }
+      Graph.create nodes edges
 
 

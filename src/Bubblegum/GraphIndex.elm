@@ -12,7 +12,7 @@ import Dict exposing (Dict)
 import Bubblegum.Irrelevant exposing(..)
 import Bubblegum.Node exposing(..)
 import Bubblegum.Edge exposing(..)
-import Bubblegum.Graph exposing (Graph)
+import Bubblegum.Graph as Graph exposing (Graph)
 import Bubblegum.NodeRole exposing(NodeRole(..), MajorNodes, toNodeRole, toMajorNodes)
 
 type alias NodeMeta = Node NodeRole
@@ -48,7 +48,7 @@ toGraphIndex: Graph nData eData -> GraphIndex
 toGraphIndex graph =
   let
     majorNodes = toMajorNodes graph
-    nodes = graph.nodes |> List.map (\n-> (n.id, {id = n.id, value = toNodeRole majorNodes n.id})) |> Dict.fromList
+    nodes = Graph.toNodeList graph |> List.map (\n-> (n.id, {id = n.id, value = toNodeRole majorNodes n.id})) |> Dict.fromList
     sourceEdges = graph.edges |> List.map (\e -> {e | value = Irrelevant}) |> groupBy .source
     destEdges = graph.edges |> List.map (\e -> {e | value = Irrelevant}) |> groupBy .destination
   in

@@ -1,4 +1,4 @@
-module Bubblegum.Node exposing(Node, create)
+module Bubblegum.Node exposing(Node, create, toTuple, fromTuple)
 
 {-| This library provides a directed graph model for representing relationships between UI components.
 
@@ -6,6 +6,8 @@ module Bubblegum.Node exposing(Node, create)
 @docs createNode, createEdge, createGraph
 
 -}
+
+import Tuple exposing(first, second)
 
 {-| The core representation of a value.
 -}
@@ -23,4 +25,13 @@ create id nodeData=
     , value = nodeData
  }
 
+toTuple: Node nData -> (String, Node nData)
+toTuple node =
+  (node.id, node)
 
+fromTuple: (String, Node nData) -> Node nData
+fromTuple tuple =
+  {
+    id= first(tuple)
+    , value = second(tuple) |> .value
+  }

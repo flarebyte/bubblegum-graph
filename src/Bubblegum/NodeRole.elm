@@ -33,7 +33,7 @@ findRootNodeIds graph =
       findParents = Graph.findEdgesByDestination graph
       findChildren = Graph.findEdgesBySource graph
   in
-      graph.nodes 
+      Graph.toNodeList graph
         |> List.filter (\node -> findParents node.id |> List.isEmpty ) 
         |> List.filter (\node -> findChildren node.id |> List.isEmpty |> not)
         |> List.map .id 
@@ -48,7 +48,7 @@ findLeafNodeIds graph =
       findParents = Graph.findEdgesByDestination graph
       findChildren = Graph.findEdgesBySource graph
   in
-      graph.nodes 
+      Graph.toNodeList graph
         |> List.filter (\node -> findChildren node.id |> List.isEmpty)         
         |> List.filter (\node -> findParents node.id |> List.isEmpty |> not ) 
         |> List.map .id 
@@ -67,7 +67,7 @@ findConvergenceNodeIds graph =
       findParents = Graph.findEdgesByDestination graph
       findChildren = Graph.findEdgesBySource graph
   in
-      graph.nodes 
+      Graph.toNodeList graph 
         |> List.filter (\node -> findParents node.id |> greaterThanOne )         
         |> List.filter (\node -> findChildren node.id |> List.isEmpty |> not )
         |> List.map .id 

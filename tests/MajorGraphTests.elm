@@ -4,6 +4,7 @@ import Test exposing (describe, test, Test)
 import Expect
 import Bubblegum.Irrelevant exposing(..)
 import Bubblegum.Edge as Edge exposing(..)
+import Bubblegum.Graph as Graph
 import Bubblegum.MajorGraph exposing(..)
 import Bubblegum.GraphIndex exposing (..)
 import FixtureHelper exposing (createSimpleGraph)
@@ -17,7 +18,7 @@ all =
         [ describe "find the major tree" <|
             [ test "gets the right nodes" <|
                 \() ->
-                    Expect.equal (myMajorGraph |> .nodes |> List.map .id) (
+                    Expect.equal (myMajorGraph |> Graph.toNodeList |> List.map .id) (
                        ["node_1", "node_15", "node_20"]
                   )
                 , test "gets the right edges" <|
