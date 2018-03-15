@@ -10,13 +10,14 @@ module Bubblegum.Graph exposing(Graph, create, findNode, toNodeList, toEdgeList,
 import Dict exposing(Dict)
 import Bubblegum.Node as Node exposing(..)
 import Bubblegum.Edge as Edge exposing(..)
-
+import Bubblegum.Relations as Relations exposing(..)
 
 {-| The core representation of a value.
 -}
 type alias Graph nData eData = {
     nodes: Dict String (Node nData)
     , edges: Dict (String, String) (Edge eData)
+    , relations: Dict String Relations
   }
 
 {-| Create graph.
@@ -26,7 +27,37 @@ create nodes edges=
   {
     nodes = nodes |> List.map Node.toTuple |> Dict.fromList
     , edges = edges |> List.map Edge.toTuple |> Dict.fromList
+    , relations = createRelations edges
   }
+
+
+createRelations: List (Edge eData) ->  Dict String Relations
+createRelations edges =
+  let
+    sourceEdges = edges |> List.map (\e -> {e | value = Irrelevant}) |> groupBy .source
+    destEdges = edges |> List.map (\e -> {e | value = Irrelevant}) |> groupBy .destination
+    keys = List.append (Dict.keys sourceEdges)  (Dict.keys destEdges) |> Set.fromList |> Set.toList
+    rel = keys
+  in
+    
+createSingleRelations: Maybe List (Edge Irrelevant) ->  Maybe List (Edge Irrelevant) -> Relations
+createSingleRelations sources dests =
+  Relations.create (sources |> Maybe.withDefault [] |> List.map Edge.toTuple) (dests |> Maybe.withDefault [] |> List.map Edge.toTuple)
+
+{-| Takes a key-fn and a list.
+  Creates a `Dict` which maps the key to a list of matching elements.
+    groupBy String.length [ "tree" , "apple" , "leaf" ]
+    --> Dict.fromList [ ( 4, [ "tree", "leaf" ] ), ( 5, [ "apple" ] ) ]
+  Code borrowed from: https://github.com/elm-community/dict-extra/blob/master/src/Dict/Extra.elm
+-}
+groupBy : (a -> comparable) -> List a -> Dict comparable (List a)
+groupBy keyfn list =
+    List.foldr
+        (\x acc ->
+            Dict.update (keyfn x) (Maybe.map ((::) x) >> Maybe.withDefault [ x ] >> Just) acc
+        )
+        Dict.empty
+        list
 
 {-| find node model.
 -}
