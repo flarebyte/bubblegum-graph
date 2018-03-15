@@ -8,6 +8,9 @@ module Bubblegum.Graph exposing(Graph, create, findNode, toNodeList, toEdgeList,
 -}
 
 import Dict exposing(Dict)
+import Set exposing(Set)
+import Tuple exposing(first, second)
+import Bubblegum.Irrelevant exposing(..)
 import Bubblegum.Node as Node exposing(..)
 import Bubblegum.Edge as Edge exposing(..)
 import Bubblegum.Relations as Relations exposing(..)
@@ -30,20 +33,32 @@ create nodes edges=
     , relations = createRelations edges
   }
 
-
+{-| Create graph.
+-}
 createRelations: List (Edge eData) ->  Dict String Relations
 createRelations edges =
   let
-    sourceEdges = edges |> List.map (\e -> {e | value = Irrelevant}) |> groupBy .source
-    destEdges = edges |> List.map (\e -> {e | value = Irrelevant}) |> groupBy .destination
+    simpleEdges = edges |> List.map (\e -> {e | value = Irrelevant})
+    sourceEdges = simpleEdges |> groupBy .source
+    destEdges = simpleEdges |> groupBy .destination
     keys = List.append (Dict.keys sourceEdges)  (Dict.keys destEdges) |> Set.fromList |> Set.toList
-    rel = keys
+    createRel: String -> Relations
+    createRel k = createNodeRelations (Dict.get k sourceEdges) (Dict.get k destEdges)
+    relations = keys |> List.map (\k -> (k,createRel k))
   in
-    
-createSingleRelations: Maybe List (Edge Irrelevant) ->  Maybe List (Edge Irrelevant) -> Relations
-createSingleRelations sources dests =
-  Relations.create (sources |> Maybe.withDefault [] |> List.map Edge.toTuple) (dests |> Maybe.withDefault [] |> List.map Edge.toTuple)
+    Dict.fromList relations
 
+{-| Create graph.
+-}
+createNodeRelations: Maybe (List { source : String, value : Irrelevant, destination : String }) ->  Maybe (List { source : String, value : Irrelevant, destination : String }) -> Relations
+createNodeRelations srcs dests =
+  let
+      toSourceDest value= value |> Maybe.withDefault [] |> List.map (\v -> (v.source, v.destination))
+      sources = srcs |> toSourceDest
+      destinations = dests |> toSourceDest
+  in
+    Relations.create  sources destinations   
+  
 {-| Takes a key-fn and a list.
   Creates a `Dict` which maps the key to a list of matching elements.
     groupBy String.length [ "tree" , "apple" , "leaf" ]
@@ -78,7 +93,8 @@ toEdgeList graph =
 -}
 findEdgesBySource: Graph nData eData -> String -> List (Edge eData)
 findEdgesBySource graph src =
-  toEdgeList graph |> List.filter (\edge -> edge.source == src)
+  -- toEdgeList graph |> List.filter (\edge -> edge.source == src)
+  Dict.get src graph.relations |> Maybe.map .outbound |> Maybe.withDefault [] |> List.map (\r -> Dict.get r graph.edges) |> List.filterMap identity
 
 {-| find edge models by destination.
   linear time O(n)
