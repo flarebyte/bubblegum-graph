@@ -20,7 +20,7 @@ all =
         , describe "find edges" <|
             [ test "find edges by a source node" <|
                 \() ->
-                    Expect.equal (findEdgesBySource myGraph "node_3" |> List.map .value) (["edge_3_10","edge_3_4","edge_3_5"]) 
+                    Expect.equal (findEdgesBySource myGraph "node_3" |> List.map .value) (["edge_3_4","edge_3_5","edge_3_10"]) 
             , test "find edges by a destination node" <|
                 \() ->
                     Expect.equal (findEdgesByDestination myGraph "node_5" |> List.map .value) (["edge_3_5"]) 
