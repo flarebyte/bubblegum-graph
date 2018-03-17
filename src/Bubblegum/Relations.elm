@@ -14,6 +14,7 @@ type alias Relations = {
     , outbound: List (String, String) 
  }
 
+
 {-| Creates a edge.
 -}
 create: List (String, String) -> List (String, String) -> Relations
@@ -22,4 +23,8 @@ create inbound outbound =
     inbound = inbound
     , outbound = outbound
  }
+
+size: Relations -> (Int, Int)
+size relation =
+  (List.length relation.inbound, List.length relation.outbound)
 
