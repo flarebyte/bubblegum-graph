@@ -1,4 +1,4 @@
-module Bubblegum.Graph exposing(Graph, create, findNode, toNodeList, toEdgeList, findEdgesBySource, findEdgesByDestination, activeKeys)
+module Bubblegum.Graph exposing(Graph, create, findNode, toNodeList, toEdgeList, findEdgesBySource, findEdgesByDestination, findRelations)
 
 {-| This library provides a directed graph model for representing relationships between UI components.
 
@@ -21,7 +21,7 @@ type alias Graph nData eData = {
     nodes: Dict String (Node nData)
     , edges: Dict (String, String) (Edge eData)
     , relations: Dict String Relations
-    , activeKeys: Dict String Int
+    , activeNodeIds: Dict String Int
   }
 
 {-| Create graph.
@@ -32,7 +32,7 @@ create nodes edges=
     nodes = nodes |> List.map Node.toTuple |> Dict.fromList
     , edges = edges |> List.map Edge.toTuple |> Dict.fromList
     , relations = createRelations edges
-    , activeKeys = createActiveKeys edges
+    , activeNodeIds = createActiveNodeIds edges
   }
 
 {-| Create graph.
@@ -80,8 +80,8 @@ swapTuple: (a, b) -> (b, a)
 swapTuple value =
   (Tuple.second value, Tuple.first value)
 
-createActiveKeys: List (Edge eData) ->  Dict String Int
-createActiveKeys edges =
+createActiveNodeIds: List (Edge eData) ->  Dict String Int
+createActiveNodeIds edges =
   let
     keys = edges |> List.map (\e -> [e.source, e.destination]) |> List.concat |> Set.fromList |> Set.toList
   in
@@ -114,10 +114,7 @@ findEdgesByDestination: Graph nData eData -> String -> List (Edge eData)
 findEdgesByDestination graph dest =
    Dict.get dest graph.relations |> Maybe.map .inbound |> Maybe.withDefault [] |> List.map (\r -> Dict.get r graph.edges) |> List.filterMap identity
 
-activeKeys: Graph nData eData -> List String
-activeKeys graph =
-  Dict.keys graph.activeKeys
+findRelations: Graph nData eData -> String -> Maybe Relations
+findRelations graph id =
+  Dict.get id graph.relations
 
-activeKeyIndex: Graph nData eData -> String ->  Maybe Int
-activeKeyIndex graph key =
-  Dict.get key graph.activeKeys
