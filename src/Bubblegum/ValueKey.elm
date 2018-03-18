@@ -16,7 +16,7 @@ import Tuple
 {-| The core representation of a value.
 -}
 type alias ValueKey = {
-  pathId: Int
+  path: List Int
   , indices: List Int
 }
 
@@ -35,19 +35,27 @@ splitAsTuple sep str =
      , String.split sep str |> List.reverse |> List.head |> Maybe.withDefault ""
      )
 
+splitInt: String -> List Int
+splitInt value =
+  String.split "/" value |> List.map parsePaddedInt |> List.reverse
+
 fromStr: String -> ValueKey
 fromStr key =
   let
       a = splitAsTuple ":" key
   in
   {
-  pathId = Tuple.first a |> parsePaddedInt
-  , indices = Tuple.second a |> String.split "/" |> List.map parsePaddedInt |> List.reverse
+  path = Tuple.first a |> splitInt
+  , indices = Tuple.second a |> splitInt
   }
+
+joinInt: List Int -> String
+joinInt list = 
+  list |> List.reverse |> List.map padInt |> String.join "/"
 
 toStr: ValueKey -> String
 toStr key =
-    padInt(key.pathId) ++ ":" ++ (key.indices |> List.reverse |> List.map padInt |> String.join "/")
+    (joinInt key.path) ++ ":" ++ (joinInt key.indices)
 
 childIndice: String -> Int
 childIndice key =
@@ -69,13 +77,13 @@ incrementKey: Int -> String -> String
 incrementKey delta key =
   fromStr key |> (incValueKey delta)|> toStr
 
-asIndices: String -> String
-asIndices key =
-  String.dropLeft 4 key 
+asPath: String -> String
+asPath key =
+  splitAsTuple ":" key |> Tuple.first 
 
 isDescendantOrSelf: String -> String -> Bool
 isDescendantOrSelf self tested =
-  String.startsWith (asIndices self) (asIndices tested)
+  String.startsWith (asPath self) (asPath tested)
 
 isDescendant: String -> String -> Bool
 isDescendant self tested =
@@ -83,4 +91,4 @@ isDescendant self tested =
 
 isAncestor:  String -> String -> Bool
 isAncestor self tested =
-  String.startsWith (asIndices tested) (asIndices self) && self /= tested
+  String.startsWith (asPath tested) (asPath self) && self /= tested
