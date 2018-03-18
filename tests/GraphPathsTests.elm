@@ -2,13 +2,12 @@ module GraphPathsTests exposing (..)
 
 import Test exposing (describe, test, Test)
 import Expect
-import Set
 import Bubblegum.GraphPaths exposing (..)
 
 createMyPath: Int -> String -> Path
 createMyPath id paths =
     {
-    id = id
+    id = toString(id)
     , nodeIds = String.split "/" paths 
     }
 
@@ -33,7 +32,7 @@ all =
         [ describe "find path by id" <|
             [ test "for existing id" <|
                 \() ->
-                    Expect.equal (byId myPaths 3) (Just path3)
+                    Expect.equal (byId myPaths "3") (Just path3)
             ]
             , describe "find path by nodes ids" <|
             [ test "for existing path" <|

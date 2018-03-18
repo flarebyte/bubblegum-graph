@@ -12,16 +12,16 @@ import Dict exposing (Dict)
 {-| The core representation of a value.
 -}
 type alias Path = {
-  id: Int
+  id: String
   , nodeIds: List String -- tail is parent, left to right == children to parent
 }
 
 type alias GraphPaths = {
   paths: List Path
-  , idToPath: Dict Int Path
+  , idToPath: Dict String Path
 }
 
-pathAsTuple: Path -> (Int, Path)
+pathAsTuple: Path -> (String, Path)
 pathAsTuple path =
   (path.id, path)
 
@@ -35,7 +35,7 @@ createGraphPaths paths =
       , idToPath = idToPath
     }
 
-byId: GraphPaths -> Int -> Maybe Path
+byId: GraphPaths -> String -> Maybe Path
 byId paths id =
   Dict.get id paths.idToPath
 
