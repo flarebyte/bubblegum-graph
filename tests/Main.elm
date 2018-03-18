@@ -1,9 +1,6 @@
 port module Main exposing (..)
 
 import GraphTests
-import NodeRoleTests
-import GraphIndexTests
-import MajorGraphTests
 import GraphPathsTests
 import ValueKeyTests
 import ValueAccessTests
@@ -16,9 +13,6 @@ all : Test
 all =
     Test.concat
         [ GraphTests.all
-        , NodeRoleTests.all
-        , GraphIndexTests.all
-        , MajorGraphTests.all
         , GraphPathsTests.all
         , ValueKeyTests.all
         , ValueAccessTests.all

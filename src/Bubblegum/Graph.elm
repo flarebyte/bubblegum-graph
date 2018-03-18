@@ -1,4 +1,4 @@
-module Bubblegum.Graph exposing(Graph, create, findNode, toNodeList, toEdgeList, findEdgesBySource, findEdgesByDestination)
+module Bubblegum.Graph exposing(Graph, create, findNode, toNodeList, toEdgeList, findEdgesBySource, findEdgesByDestination, activeKeys)
 
 {-| This library provides a directed graph model for representing relationships between UI components.
 
@@ -114,5 +114,10 @@ findEdgesByDestination: Graph nData eData -> String -> List (Edge eData)
 findEdgesByDestination graph dest =
    Dict.get dest graph.relations |> Maybe.map .inbound |> Maybe.withDefault [] |> List.map (\r -> Dict.get r graph.edges) |> List.filterMap identity
 
+activeKeys: Graph nData eData -> List String
+activeKeys graph =
+  Dict.keys graph.activeKeys
 
-
+activeKeyIndex: Graph nData eData -> String ->  Maybe Int
+activeKeyIndex graph key =
+  Dict.get key graph.activeKeys
