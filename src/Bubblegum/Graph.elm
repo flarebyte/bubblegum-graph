@@ -9,6 +9,7 @@ module Bubblegum.Graph exposing(Graph, create, findNode, toNodeList, toEdgeList,
 
 import Dict exposing(Dict)
 import Set exposing(Set)
+import Tuple
 import Bubblegum.Irrelevant exposing(..)
 import Bubblegum.Node as Node exposing(..)
 import Bubblegum.Edge as Edge exposing(..)
@@ -20,6 +21,7 @@ type alias Graph nData eData = {
     nodes: Dict String (Node nData)
     , edges: Dict (String, String) (Edge eData)
     , relations: Dict String Relations
+    , activeKeys: Dict String Int
   }
 
 {-| Create graph.
@@ -30,6 +32,7 @@ create nodes edges=
     nodes = nodes |> List.map Node.toTuple |> Dict.fromList
     , edges = edges |> List.map Edge.toTuple |> Dict.fromList
     , relations = createRelations edges
+    , activeKeys = createActiveKeys edges
   }
 
 {-| Create graph.
@@ -72,6 +75,18 @@ groupBy keyfn list =
         )
         Dict.empty
         list
+
+swapTuple: (a, b) -> (b, a)
+swapTuple value =
+  (Tuple.second value, Tuple.first value)
+
+createActiveKeys: List (Edge eData) ->  Dict String Int
+createActiveKeys edges =
+  let
+    keys = edges |> List.map (\e -> [e.source, e.destination]) |> List.concat |> Set.fromList |> Set.toList
+  in
+   keys |> List.indexedMap (,) |> List.map swapTuple |> Dict.fromList
+
 
 {-| find node model.
 -}
