@@ -1,4 +1,4 @@
-module Bubblegum.GraphPaths exposing(Path, GraphPaths, createGraphPaths, byId, byNodeIds, parent, descendants, descendantsOrSelf, children)
+module Bubblegum.GraphPaths exposing(Path, GraphPaths, create, byId, byNodeIds, parent, descendants, descendantsOrSelf, children)
 
 {-| This library provides a directed graph model for representing relationships between UI components.
 
@@ -25,8 +25,8 @@ pathAsTuple: Path -> (String, Path)
 pathAsTuple path =
   (path.id, path)
 
-createGraphPaths: List Path -> GraphPaths
-createGraphPaths paths =
+create: List Path -> GraphPaths
+create paths =
   let
         idToPath = paths |> List.map pathAsTuple |> Dict.fromList
   in

@@ -1,4 +1,4 @@
-module Bubblegum.Relations exposing(Relations, create)
+module Bubblegum.Relations exposing(Relations, create, isLeaf, isRoot)
 
 {-| This library provides a directed graph model for representing relationships between UI components.
 
@@ -28,3 +28,10 @@ size: Relations -> (Int, Int)
 size relation =
   (List.length relation.inbound, List.length relation.outbound)
 
+isLeaf: Relations -> Bool
+isLeaf relation =
+  List.isEmpty relation.outbound
+
+isRoot: Relations -> Bool
+isRoot relation =
+  List.isEmpty relation.inbound  

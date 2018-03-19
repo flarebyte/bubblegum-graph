@@ -1,4 +1,4 @@
-module Bubblegum.Graph exposing(Graph, create, findNode, findEdgesBySource, findEdgesByDestination)
+module Bubblegum.Graph exposing(Graph, create, findNode, findEdge, findEdgesBySource, findEdgesByDestination)
 
 {-| This library provides a directed graph model for representing relationships between UI components.
 
@@ -10,10 +10,12 @@ module Bubblegum.Graph exposing(Graph, create, findNode, findEdgesBySource, find
 import Dict exposing(Dict)
 import Set exposing(Set)
 import Tuple
+import String exposing (padLeft)
 import Bubblegum.Irrelevant exposing(..)
 import Bubblegum.Node as Node exposing(..)
 import Bubblegum.Edge as Edge exposing(..)
 import Bubblegum.Relations as Relations exposing(..)
+import Bubblegum.GraphPaths as GraphPaths exposing(GraphPaths)
 
 {-| The core representation of a value.
 -}
@@ -21,6 +23,7 @@ type alias Graph nData eData = {
     nodes: Dict String (Node nData)
     , edges: Dict (String, String) (Edge eData)
     , relations: Dict String Relations
+   -- , paths: GraphPaths
   }
 
 {-| Create graph.
@@ -78,12 +81,9 @@ swapTuple: (a, b) -> (b, a)
 swapTuple value =
   (Tuple.second value, Tuple.first value)
 
-createActiveNodeIds: List (Edge eData) ->  Dict String Int
-createActiveNodeIds edges =
-  let
-    keys = edges |> List.map (\e -> [e.source, e.destination]) |> List.concat |> Set.fromList |> Set.toList
-  in
-   keys |> List.indexedMap (,) |> List.map swapTuple |> Dict.fromList
+getActiveNodeIds: Dict String Relations ->  Dict String Int
+getActiveNodeIds dict =
+    Dict.keys dict |> List.indexedMap (,) |> List.map swapTuple |> Dict.fromList
 
 
 {-| find node model.
@@ -91,6 +91,12 @@ createActiveNodeIds edges =
 findNode: Graph nData eData -> String -> Maybe (Node nData)
 findNode graph id =
   Dict.get id graph.nodes
+
+{-| find edge models by destination.
+-}
+findEdge: Graph nData eData -> (String, String) -> Maybe (Edge eData)
+findEdge graph sourceDest =
+   Dict.get sourceDest graph.edges 
 
 {-| find edge models by source.
 -}
@@ -104,5 +110,36 @@ findEdgesByDestination: Graph nData eData -> String -> List (Edge eData)
 findEdgesByDestination graph dest =
    Dict.get dest graph.relations |> Maybe.map .inbound |> Maybe.withDefault [] |> List.map (\r -> Dict.get r graph.edges) |> List.filterMap identity
 
+padInt: Int -> String
+padInt int =
+  padLeft 3 '0' (toString int)
+
+joinInt: List Int -> String
+joinInt list = 
+  list |> List.reverse |> List.map padInt |> String.join "/"
 
 
+type alias PathBuilder = {
+  paths: List (List String)
+  , progress: Dict (String, String) (List String) 
+}
+
+buildPaths: PathBuilder -> PathBuilder
+buildPaths builder =
+  builder
+
+createGraphPaths: Dict String Relations -> GraphPaths
+createGraphPaths relations =
+  let
+      nodeIds = getActiveNodeIds relations
+      nodeIdToInt id = Dict.get id nodeIds |> Maybe.withDefault -1
+      createId ids = ids |> List.map nodeIdToInt |> joinInt
+      createPath ids = {id = createId ids, nodeIds=ids}
+      leaves = Dict.values relations |> List.filter Relations.isLeaf |> List.map .inbound |> List.concat
+      pathBuilder = buildPaths {
+        paths = []
+        , progress = leaves |> List.map (\leave -> (leave, [Tuple.first leave, Tuple.second leave])) |> Dict.fromList
+      }
+      paths = pathBuilder.paths |> List.map createPath
+  in
+      GraphPaths.create paths

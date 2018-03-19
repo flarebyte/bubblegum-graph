@@ -24,7 +24,7 @@ path10 = createMyPath 10 "mumancestor"
 path11 = createMyPath 11 "uncle/grand/ancestor"
 path12 = createMyPath 12 "/cousinuncle/grand/ancestor"
 
-myPaths = createGraphPaths [path1, path2, path3, path4, path5, path6, path7, path8, path9, path10, path11, path12]
+myPaths = GraphPaths.create [path1, path2, path3, path4, path5, path6, path7, path8, path9, path10, path11, path12]
 
 all : Test
 all =
