@@ -126,34 +126,40 @@ joinInt list =
 
 type alias PathBuilder = {
   paths: List (List String)
-  , progress: Dict (String, String) (List String) 
+  , progress: List (List String) 
 }
 
+type alias FlaggedPath = (Bool, (List String))
+
 -- keys should never be empty
-directAncestors: Dict String Relations ->List (List String) -> List(List String)
+directAncestors: Dict String Relations -> List FlaggedPath -> List FlaggedPath
 directAncestors relations lists =
   let
-      ids = List.head lists |> Maybe.withDefault [] -- keys should never be empty
+      ids = List.head lists |> Maybe.withDefault (False, []) |> second -- keys should never be empty
       lastId = List.head ids |> Maybe.withDefault "???" -- should at least have one id
       parents = Dict.get lastId relations |> Maybe.map .inbound |> Maybe.withDefault []
   in
       case parents of
         [] ->
-          lists
+          [(True, ids)] --root
         [one] ->
-          [(first one) :: ids] |> directAncestors relations -- single ancestor
+          [(False, (first one) :: ids)] |> directAncestors relations -- single ancestor
         many ->
-          List.map (\k -> (first k) :: ids) many
+          List.map (\k -> (False, (first k) :: ids)) many
 
 
 
 buildPaths: Dict String Relations -> PathBuilder -> PathBuilder
 buildPaths relations builder =
-  if (Dict.isEmpty builder.progress) then
-    builder
-  else
-    builder
-    -- builder.progress |> Dict.keys |> List.map first |> List.map (\source -> Dict.get source relations)
+    let
+        ancestors = builder.progress |> List.map (\k -> directAncestors relations [(False, k)]) |> List.concat
+        (roots, tocontinue) = List.partition (\a -> first a ) ancestors
+    in
+        {
+          paths = List.append builder.paths (List.map second roots)
+          , progress = List.map second tocontinue
+        }
+    
 
 
 createGraphPaths: Dict String Relations -> GraphPaths
@@ -166,7 +172,7 @@ createGraphPaths relations =
       leaves = Dict.values relations |> List.filter Relations.isLeaf |> List.map .inbound |> List.concat
       pathBuilder = buildPaths relations {
         paths = []
-        , progress = leaves |> List.map (\leave -> (leave, [Tuple.first leave, Tuple.second leave])) |> Dict.fromList
+        , progress = leaves |> List.map (\leave -> [Tuple.first leave, Tuple.second leave])
       }
       paths = pathBuilder.paths |> List.map createPath
   in
