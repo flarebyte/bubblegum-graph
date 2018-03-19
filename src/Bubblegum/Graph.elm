@@ -23,17 +23,22 @@ type alias Graph nData eData = {
     nodes: Dict String (Node nData)
     , edges: Dict (String, String) (Edge eData)
     , relations: Dict String Relations
-   -- , paths: GraphPaths
+    , paths: GraphPaths
   }
 
 {-| Create graph.
 -}
 create: List  (Node nData) -> List (Edge eData) -> Graph nData eData
 create nodes edges=
+  let
+      relations = createRelations edges
+  in
+      
   {
     nodes = nodes |> List.map Node.toTuple |> Dict.fromList
     , edges = edges |> List.map Edge.toTuple |> Dict.fromList
-    , relations = createRelations edges
+    , relations = relations
+    , paths = createGraphPaths relations
   }
 
 {-| Create graph.
