@@ -29,6 +29,9 @@ all =
             [ test "id of paths" <|
                 \() ->
                     Expect.equal (myGraph.paths |> .paths |> List.map .id) (["node_3"]) 
-            ]
+            , test "id of paths" <|
+                \() ->
+                    Expect.equal (myGraph.paths |> .paths |> List.map .nodeIds) ([["node_3"]]) 
+           ]
                  
         ]
