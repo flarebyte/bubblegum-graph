@@ -25,8 +25,8 @@ all =
                 \() ->
                     Expect.equal (findEdgesByDestination myGraph "node_5" |> List.map .value) (["edge_3_5"]) 
             ]  
-        , describe "find nodes" <|
-            [ test "find a node by id" <|
+        , describe "Finds all the paths" <|
+            [ test "id of paths" <|
                 \() ->
                     Expect.equal (myGraph.paths |> .paths |> List.map .id) (["node_3"]) 
             ]

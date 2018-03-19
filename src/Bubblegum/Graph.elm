@@ -9,7 +9,7 @@ module Bubblegum.Graph exposing(Graph, create, findNode, findEdge, findEdgesBySo
 
 import Dict exposing(Dict)
 import Set exposing(Set)
-import Tuple
+import Tuple exposing (first, second)
 import String exposing (padLeft)
 import Bubblegum.Irrelevant exposing(..)
 import Bubblegum.Node as Node exposing(..)
@@ -129,9 +129,32 @@ type alias PathBuilder = {
   , progress: Dict (String, String) (List String) 
 }
 
-buildPaths: PathBuilder -> PathBuilder
-buildPaths builder =
-  builder
+-- keys should never be empty
+directAncestors: Dict String Relations ->List (List String) -> List(List String)
+directAncestors relations lists =
+  let
+      ids = List.head lists |> Maybe.withDefault [] -- keys should never be empty
+      lastId = List.head ids |> Maybe.withDefault "???" -- should at least have one id
+      parents = Dict.get lastId relations |> Maybe.map .inbound |> Maybe.withDefault []
+  in
+      case parents of
+        [] ->
+          lists
+        [one] ->
+          [(first one) :: ids] |> directAncestors relations -- single ancestor
+        many ->
+          List.map (\k -> (first k) :: ids) many
+
+
+
+buildPaths: Dict String Relations -> PathBuilder -> PathBuilder
+buildPaths relations builder =
+  if (Dict.isEmpty builder.progress) then
+    builder
+  else
+    builder
+    -- builder.progress |> Dict.keys |> List.map first |> List.map (\source -> Dict.get source relations)
+
 
 createGraphPaths: Dict String Relations -> GraphPaths
 createGraphPaths relations =
@@ -141,7 +164,7 @@ createGraphPaths relations =
       createId ids = ids |> List.map nodeIdToInt |> joinInt
       createPath ids = {id = createId ids, nodeIds=ids}
       leaves = Dict.values relations |> List.filter Relations.isLeaf |> List.map .inbound |> List.concat
-      pathBuilder = buildPaths {
+      pathBuilder = buildPaths relations {
         paths = []
         , progress = leaves |> List.map (\leave -> (leave, [Tuple.first leave, Tuple.second leave])) |> Dict.fromList
       }
