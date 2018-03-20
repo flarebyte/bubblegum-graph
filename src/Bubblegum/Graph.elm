@@ -136,16 +136,16 @@ directAncestors: Dict String Relations -> List FlaggedPath -> List FlaggedPath
 directAncestors relations lists =
   let
       ids = List.head lists |> Maybe.withDefault (False, []) |> second -- keys should never be empty
-      lastId = List.head ids |> Maybe.withDefault "???" -- should at least have one id
+      lastId = List.reverse ids |> List.head |> Maybe.withDefault "???" -- should at least have one id
       parents = Dict.get lastId relations |> Maybe.map .inbound |> Maybe.withDefault []
   in
       case parents of
         [] ->
           [(True, ids)] --root
         [one] ->
-          [(False, (first one) :: ids)] |> directAncestors relations -- single ancestor
+          [(False, ids ++ [first one])] |> directAncestors relations -- single ancestor
         many ->
-          List.map (\k -> (False, (first k) :: ids)) many
+          List.map (\k -> (False, ids ++ [first k])) many
 
 
 
@@ -172,7 +172,7 @@ createGraphPaths relations =
       leaves = Dict.values relations |> List.filter Relations.isLeaf |> List.map .inbound |> List.concat
       pathBuilder = buildPaths relations {
         paths = []
-        , progress = leaves |> List.map (\leave -> [Tuple.first leave, Tuple.second leave])
+        , progress = leaves |> List.map (\leave -> [Tuple.second leave, Tuple.first leave])
       }
       paths = pathBuilder.paths |> List.map createPath
   in
