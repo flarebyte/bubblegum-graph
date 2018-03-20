@@ -3,11 +3,14 @@ module GraphTests exposing (..)
 import Test exposing (describe, test, Test)
 import Expect
 import Bubblegum.Graph exposing (..)
-import FixtureHelper exposing (createSimpleGraph)
+import FixtureHelper exposing (..)
+import Set
 
 import List
 
 myGraph = createSimpleGraph
+
+graphIds = ["000/006/008/009","000/006/008/010/011/012","000/006/008/010/011/013","000/006/008/010/011/002/003/004","000/006/008/010/011/002/003/005","000/006/008/010/011/002/003/009","000/006/008/010/007/012","000/006/008/001/007/012","000/006/008/010/007/002/003/004","000/006/008/001/007/002/003/004","000/006/008/010/007/002/003/005","000/006/008/001/007/002/003/005","000/006/008/010/007/002/003/009","000/006/008/001/007/002/003/009"]
 
 all : Test
 all =
@@ -28,10 +31,10 @@ all =
         , describe "Finds all the paths" <|
             [ test "id of paths" <|
                 \() ->
-                    Expect.equal (myGraph.paths |> .paths |> List.map .id) (["node_3"]) 
+                    Expect.equal (myGraph.paths |> .paths |> List.map .id |> Set.fromList) (graphIds |> Set.fromList) 
             , test "id of paths" <|
                 \() ->
-                    Expect.equal (myGraph.paths |> .paths |> List.map .nodeIds) ([["node_3"]]) 
+                    Expect.equal (myGraph.paths |> .paths |> List.map .nodeIds |> Set.fromList) (end2endPathsForSimpleGraph |> Set.fromList) 
            ]
                  
         ]

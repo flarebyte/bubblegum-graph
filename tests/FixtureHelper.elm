@@ -1,4 +1,4 @@
-module FixtureHelper exposing (createSimpleGraph)
+module FixtureHelper exposing (createSimpleGraph, end2endPathsForSimpleGraph)
 
 import Bubblegum.Node as Node exposing (..)
 import Bubblegum.Edge as Edge exposing (..)
@@ -29,3 +29,20 @@ createSimpleGraph =
         ]       
     in
         Graph.create simpleNodes simpleEdges
+
+end2endPathsForSimpleGraph = [
+    ["node_4","node_3","node_2","node_1"],
+    ["node_7","node_6","node_5","node_3","node_2","node_1"],
+    ["node_8","node_6","node_5","node_3","node_2","node_1"],
+    ["node_17","node_16","node_15","node_6","node_5","node_3","node_2","node_1"],
+    ["node_18","node_16","node_15","node_6","node_5","node_3","node_2","node_1"],
+    ["node_4","node_16","node_15","node_6","node_5","node_3","node_2","node_1"],
+    ["node_7","node_20","node_5","node_3","node_2","node_1"],
+    ["node_7","node_20","node_10","node_3","node_2","node_1"],
+    ["node_17","node_16","node_15","node_20","node_5","node_3","node_2","node_1"],
+    ["node_17","node_16","node_15","node_20","node_10","node_3","node_2","node_1"],
+    ["node_18","node_16","node_15","node_20","node_5","node_3","node_2","node_1"],
+    ["node_18","node_16","node_15","node_20","node_10","node_3","node_2","node_1"],
+    ["node_4","node_16","node_15","node_20","node_5","node_3","node_2","node_1"],
+    ["node_4","node_16","node_15","node_20","node_10","node_3","node_2","node_1"]
+    ]

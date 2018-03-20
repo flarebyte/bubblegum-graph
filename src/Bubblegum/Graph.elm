@@ -154,11 +154,15 @@ buildPaths relations builder =
     let
         ancestors = builder.progress |> List.map (\k -> directAncestors relations [(False, k)]) |> List.concat
         (roots, tocontinue) = List.partition (\a -> first a ) ancestors
-    in
-        {
+        newbuilder = {
           paths = List.append builder.paths (List.map second roots)
           , progress = List.map second tocontinue
         }
+    in
+       if (List.isEmpty tocontinue) then
+        newbuilder
+       else
+        buildPaths relations newbuilder
     
 
 
