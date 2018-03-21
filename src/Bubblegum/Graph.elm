@@ -41,6 +41,10 @@ create nodes edges=
     , paths = createGraphPaths relations
   }
 
+unique: List comparable -> List comparable
+unique list =
+  Set.fromList list |> Set.toList
+
 {-| Create graph.
 -}
 createRelations: List (Edge eData) ->  Dict String Relations
@@ -49,7 +53,7 @@ createRelations edges =
     simpleEdges = edges |> List.map (\e -> {e | value = Irrelevant})
     outboundEdges = simpleEdges |> groupBy .source
     inboundEdges = simpleEdges |> groupBy .destination
-    keys = List.append (Dict.keys outboundEdges)  (Dict.keys inboundEdges) |> Set.fromList |> Set.toList
+    keys = List.append (Dict.keys outboundEdges)  (Dict.keys inboundEdges) |> unique
     createRel: String -> Relations
     createRel k = createNodeRelations (Dict.get k inboundEdges) (Dict.get k outboundEdges)
     relations = keys |> List.map (\k -> (k,createRel k))
@@ -124,11 +128,6 @@ joinInt list =
   list |> List.reverse |> List.map padInt |> String.join "/"
 
 
-type alias PathBuilder = {
-  paths: List (List String)
-  , progress: List (List String) 
-}
-
 type alias FlaggedPath = (Bool, (List String))
 
 -- keys should never be empty
@@ -148,6 +147,10 @@ directAncestors relations lists =
           List.map (\k -> (False, ids ++ [first k])) many
 
 
+type alias PathBuilder = {
+  paths: List (List String)
+  , progress: List (List String) 
+}
 
 buildPaths: Dict String Relations -> PathBuilder -> PathBuilder
 buildPaths relations builder =
@@ -164,6 +167,15 @@ buildPaths relations builder =
        else
         buildPaths relations newbuilder
     
+expandPath: List String -> List (List String)
+expandPath path =
+  case path of
+    [] ->
+      [path]
+    [one] ->
+      [path]
+    twoOrMore ->
+      List.tail twoOrMore |> Maybe.withDefault [] |> expandPath |> (\stuff-> path :: stuff)
 
 
 createGraphPaths: Dict String Relations -> GraphPaths
@@ -178,6 +190,6 @@ createGraphPaths relations =
         paths = []
         , progress = leaves |> List.map (\leave -> [Tuple.second leave, Tuple.first leave])
       }
-      paths = pathBuilder.paths |> List.map createPath
+      paths = pathBuilder.paths |> List.map expandPath |> List.concat |> unique |> List.map createPath
   in
       GraphPaths.create paths
