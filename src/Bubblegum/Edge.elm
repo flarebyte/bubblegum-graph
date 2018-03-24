@@ -1,14 +1,24 @@
-module Bubblegum.Edge exposing(Edge, toTuple, fromTuple, create)
+module Bubblegum.Edge exposing(create, Edge, toTuple, fromTuple)
 
-{-| This library provides a directed graph model for representing relationships between UI components.
+{-| Edge helps to represent the relationship between two nodes.
 
 # Build
-@docs createNode, createEdge, createGraph
+@docs create, Edge
+
+# Conversion
+@docs toTuple, fromTuple
 
 -}
 import Tuple exposing (first, second)
 
-{-| The core representation of a value.
+{-| The representation of an edge between two nodes.
+  
+    {
+      source = "London"
+      , destination= "Paris"
+      , value = "344 km"
+    }
+
 -}
 type alias Edge eData= {
     source: String
@@ -16,7 +26,10 @@ type alias Edge eData= {
     , value: eData
  }
 
-{-| Creates a edge.
+{-| Create an edge providing the source, the destination and the value.
+
+    ldnParis = create "London" "Paris" "344 km"
+
 -}
 create: String -> String -> eData -> Edge eData
 create source destination edgeData=
@@ -26,10 +39,20 @@ create source destination edgeData=
     , value = edgeData
  }
 
+{-| Convert an edge to a tuple.
+
+  toTuple ldnParis == (("London", "Paris"), "344 km")
+
+-}
 toTuple: Edge eData -> ((String, String), Edge eData)
 toTuple edge =
   ((edge.source, edge.destination), edge)
 
+{-| Convert a tuple to an edge.
+
+  fromTuple (("London", "Paris"), "344 km") == { source = "London", destination = "Paris", value = "344 km"}
+
+-}
 fromTuple: ((String, String), Edge eData) -> Edge eData
 fromTuple tuple =
   second(tuple)

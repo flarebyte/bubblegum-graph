@@ -1,9 +1,9 @@
 module Bubblegum.Irrelevant exposing(..)
 
-{-| This library provides a directed graph model for representing relationships between UI components.
+{-| Irrelevant is type to be used as value when the value is not relevant.
 
 # Build
-@docs createNode, createEdge, createGraph
+@docs Irrelevant
 
 -}
 

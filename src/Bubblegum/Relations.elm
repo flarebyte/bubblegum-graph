@@ -1,13 +1,19 @@
-module Bubblegum.Relations exposing(Relations, create, isLeaf, isRoot)
+module Bubblegum.Relations exposing(create, Relations, isLeaf, isRoot)
 
-{-| This library provides a directed graph model for representing relationships between UI components.
+{-| Relations helps to describe the inbound and outbound relationships to a node.
 
 # Build
-@docs createNode, createEdge, createGraph
+@docs create, Relations
+
+# Test
+@docs isLeaf, isRoot
 
 -}
 
-{-| The core representation of a value.
+{-| The representation of the inbound and outbound relationships to a node.
+  
+  { inbound = [("London", "Paris"), ("Amsterdam", "Paris")], outbound = [("Paris", "New York")] }
+
 -}
 type alias Relations = {
     inbound: List (String, String)
@@ -15,7 +21,10 @@ type alias Relations = {
  }
 
 
-{-| Creates a edge.
+{-| Create the relations against a node providing the inbound and outbound values.
+
+  create [("London", "Paris"), ("Amsterdam", "Paris")] [("Paris", "New York")]
+ 
 -}
 create: List (String, String) -> List (String, String) -> Relations
 create inbound outbound =
@@ -24,14 +33,20 @@ create inbound outbound =
     , outbound = outbound
  }
 
-size: Relations -> (Int, Int)
-size relation =
-  (List.length relation.inbound, List.length relation.outbound)
+{-| Test whether the relations represents a leaf in the graph. No more children.
 
+  isLeaf { inbound = [("London", "Paris"), ("Amsterdam", "Paris")], outbound = [] } == True
+
+-}
 isLeaf: Relations -> Bool
 isLeaf relation =
   List.isEmpty relation.outbound
 
+{-| Test whether the relations represents a root in the graph. No more parents.
+
+  isLeaf { inbound = [], outbound = [("Paris", "New York")] } == True
+
+-}
 isRoot: Relations -> Bool
 isRoot relation =
   List.isEmpty relation.inbound  
