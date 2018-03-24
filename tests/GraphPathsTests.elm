@@ -3,6 +3,7 @@ module GraphPathsTests exposing (..)
 import Test exposing (describe, test, Test)
 import Expect
 import Bubblegum.GraphPaths as GraphPaths exposing (..)
+import Bubblegum.Path as Path exposing (Path)
 
 createMyPath: Int -> String -> Path
 createMyPath id paths =
