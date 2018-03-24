@@ -1,8 +1,8 @@
-module ValueAccessTests exposing (..)
+module ValueDictTests exposing (..)
 
 import Test exposing (describe, test, Test)
 import Expect
-import Bubblegum.ValueAccess exposing (..)
+import Bubblegum.ValueDict exposing (..)
 
 val: String -> (String, String)
 val value =

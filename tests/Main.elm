@@ -3,7 +3,7 @@ port module Main exposing (..)
 import GraphTests
 import GraphPathsTests
 import ValueKeyTests
-import ValueAccessTests
+import ValueDictTests
 import Test.Runner.Node exposing (run, TestProgram)
 import Test exposing (Test)
 import Json.Encode exposing (Value)
@@ -15,7 +15,7 @@ all =
         [ GraphTests.all
         , GraphPathsTests.all
         , ValueKeyTests.all
-        , ValueAccessTests.all
+        , ValueDictTests.all
         ]
 
 main : TestProgram

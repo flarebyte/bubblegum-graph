@@ -104,8 +104,8 @@ isAncestor:  String -> String -> Bool
 isAncestor self tested =
   String.startsWith (asPath tested) (asPath self) && self /= tested
 
-  -- FOR INTERNAL USE ONLY
-  -- Private methods
+-- FOR INTERNAL USE ONLY
+-- Private methods
 
 -- The representation of value key. Path represents the path as a list of nodeIds. Indices represents the number of values for each nodeId.
 type alias ValueKey = {
