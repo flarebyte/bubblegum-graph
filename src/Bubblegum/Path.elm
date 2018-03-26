@@ -8,6 +8,8 @@ module Bubblegum.Path exposing(create, Path)
 -}
 import Dict exposing(Dict)
 import String exposing (padLeft)
+import List as List
+import Maybe as Maybe
 
 
 {-| Representation of path in the Graph -}
@@ -18,14 +20,17 @@ type alias Path = {
 
 {-| Create a path providing an unique id and a list of node ids, children first 
 
-  create "0012/001" ["Athena", "Zeus"]
+  create (Dict.fromList [("Athena", 1), ("Zeus", 2)]  ["Athena", "Zeus"]
 -}
 create: Dict String Int -> List String -> Path
 create idToInt nodeIds =
-  {
-  id = id
-  , nodeIds = nodeIds
-  }
+  let
+      nodeIdToInt id = Dict.get id idToInt |> Maybe.withDefault -1
+  in
+   {
+    id = List.map nodeIdToInt nodeIds |> joinInt
+    , nodeIds = nodeIds
+   }
 
 -- FOR INTERNAL USE ONLY
 -- Private methods

@@ -49,4 +49,4 @@ isLeaf relation =
 -}
 isRoot: Relations -> Bool
 isRoot relation =
-  List.isEmpty relation.inbound  
+  List.isEmpty relation.inbound

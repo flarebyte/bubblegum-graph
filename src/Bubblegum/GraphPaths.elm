@@ -1,9 +1,12 @@
-module Bubblegum.GraphPaths exposing(GraphPaths, create, byId, byNodeIds, parent, descendants, descendantsOrSelf, children)
+module Bubblegum.GraphPaths exposing(create, GraphPaths, byId, byNodeIds, parent, descendants, descendantsOrSelf, children)
 
-{-| This library provides a directed graph model for representing relationships between UI components.
+{-| GraphPaths helps a graph as a list of paths.
 
 # Build
-@docs
+@docs create
+
+#Query
+@docs byId, byNodeIds, parent, descendants, descendantsOrSelf, children
 
 -}
 
@@ -15,7 +18,7 @@ type alias GraphPaths = {
   , idToPath: Dict String Path
 }
 
-
+{-| Creates an object representing the paths withn a graph -}
 create: List Path -> GraphPaths
 create paths =
   let
@@ -26,11 +29,19 @@ create paths =
       , idToPath = idToPath
     }
 
+{-| Retrieve a path by id 
+
+  byid graphPaths "001/011/111"
+-}
 byId: GraphPaths -> String -> Maybe Path
 byId paths id =
   Dict.get id paths.idToPath
 
 
+{-| Retrieve a path by providing a list of nodeIds 
+
+  byNodeIds graphPaths ["Athena", "Zeus"]
+-}
 byNodeIds: GraphPaths -> List String -> Maybe Path
 byNodeIds paths nodeIds =
   paths.paths |> List.filter (matchNodeIds nodeIds) |> List.head
