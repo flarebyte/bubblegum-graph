@@ -1,12 +1,24 @@
-module Bubblegum.Graph exposing(create, Graph, findNode, findEdge, findEdgesBySource, findEdgesByDestination)
+module Bubblegum.Graph exposing(create, Graph, findNode, findEdge, findEdgesBySource, findEdgesByDestination, findRelations, toPaths)
 
-{-| Graph helps to represent the directed acyclic graph.
+{-| Graph helps to represent a directed acyclic graph consisting of a set of nodes and a set of edges.
+
+This is an experimental implementation which attempts to expose a graph as a list of paths, similar in concept to xpath.
+In other words, the graph is converted to a flat list to make processing easier.
+
+This library has been implemented with the idea of of been used for the Bubblegum UI library. However, it should be possible to use it for other purposes.
+
+If you are looking for a general purpose Graph library, I would recommend [this](https://github.com/elm-community/graph) instead.
+
+Limits of Bubblegum.Graph:
+ * No more than 1000 nodes or edges.
+ * Only one edge with the same source and destination.
+ * The graph should not have any cycles (loops).
 
 # Build
 @docs create, Graph
 
 # Query
-@docs findNode, findEdge, findEdgesBySource, findEdgesByDestination
+@docs findNode, findEdge, findEdgesBySource, findEdgesByDestination, findRelations, toPaths
 -}
 
 import Dict exposing(Dict)
@@ -74,6 +86,20 @@ findEdgesBySource graph src =
 findEdgesByDestination: Graph nData eData -> String -> List (Edge eData)
 findEdgesByDestination graph dest =
    Dict.get dest graph.relations |> Maybe.map .inbound |> Maybe.withDefault [] |> List.map (\r -> Dict.get r graph.edges) |> List.filterMap identity
+
+{-| find the relations given the nodeId.
+
+  findRelations graph "Athena"
+-}
+findRelations:  Graph nData eData -> String -> Maybe Relations
+findRelations graph nodeId =
+  Dict.get nodeId graph.relations
+
+{-| Export the graph as a list of paths faciliting a xpath like approach.
+-}
+toPaths:  Graph nData eData -> GraphPaths
+toPaths graph = graph.paths
+
 
 -- FOR INTERNAL USE ONLY
 -- Private methods

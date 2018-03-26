@@ -83,8 +83,7 @@ incrementKey delta key =
 isDescendantOrSelf: String -> String -> Bool
 isDescendantOrSelf self tested =
   String.startsWith (asPath self) (asPath tested)
-
--- TODO is this the right logic ??
+  && String.startsWith (asIndices self) (asIndices tested)
 
 {-| Check if a key is a descendant of another key.
   
@@ -102,7 +101,9 @@ isDescendant self tested =
 -}
 isAncestor:  String -> String -> Bool
 isAncestor self tested =
-  String.startsWith (asPath tested) (asPath self) && self /= tested
+  String.startsWith (asPath tested) (asPath self)
+  && String.startsWith (asIndices tested) (asIndices self)  
+  && self /= tested
 
 -- FOR INTERNAL USE ONLY
 -- Private methods
@@ -164,3 +165,8 @@ incValueKey delta key =
 asPath: String -> String
 asPath key =
   splitAsTuple key |> Tuple.first 
+
+-- extract the indcies part of the key
+asIndices: String -> String
+asIndices key =
+  splitAsTuple key |> Tuple.second 

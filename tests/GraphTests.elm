@@ -40,10 +40,10 @@ all =
         , describe "Finds all the paths" <|
             [ test "id of paths" <|
                 \() ->
-                    Expect.equal (myGraph.paths |> .paths |> List.map .id |> Set.fromList) (graphIds |> Set.fromList) 
+                    Expect.equal (toPaths myGraph |> .paths |> List.map .id |> Set.fromList) (graphIds |> Set.fromList) 
             , test "id of paths" <|
                 \() ->
-                    Expect.equal (myGraph.paths |> .paths |> List.map .nodeIds |> Set.fromList) (end2endPathsForSimpleGraph ++ parentsForSimpleGraph|> Set.fromList) 
+                    Expect.equal (toPaths myGraph |> .paths |> List.map .nodeIds |> Set.fromList) (end2endPathsForSimpleGraph ++ parentsForSimpleGraph|> Set.fromList) 
            ]
                  
         ]
