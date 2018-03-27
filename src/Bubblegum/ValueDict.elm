@@ -25,6 +25,7 @@ import Tuple exposing(first, second)
 type alias Values m = Dict String (String, m)
 
 {-| Determine if the dictionary is empty.
+
     isEmpty empty == True
 -}
 isEmpty : Values  m -> Bool
@@ -55,7 +56,8 @@ member values id =
 
 {-| Insert a value into values. Replaces value when there is
 a collision. This will take *O(log n)* time.
-  insert values ("004/006/007/011:006/007/008/009", "some value")
+
+    insert values ("004/006/007/011:006/007/008/009", "some value")
 
 -}
 insert: Values  m-> (String, m) -> Values  m
@@ -90,7 +92,7 @@ keys values =
 {-| Remove a key-value pair from values. If the key is not found,
 no changes are made. This will take *O(log n)* time.
 
-  remove values ("004/006/007/011:006/007/008/009", "some value")
+    remove values ("004/006/007/011:006/007/008/009", "some value")
 
 -}
 remove: Values  m -> String -> Values  m

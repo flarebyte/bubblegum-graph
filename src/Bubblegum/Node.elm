@@ -14,7 +14,7 @@ import Tuple exposing(first, second)
 
 {-| The core representation of a node or vertex.
 
-  {id = "London", value = "8,787,892 inhabitants"}
+    {id = "London", value = "8,787,892 inhabitants"}
 -}
 type alias Node nData= {
     id: String
@@ -23,7 +23,7 @@ type alias Node nData= {
 
 {-| Creates a node or vertex providing the id and value.
 
-  create "London" "8,787,892 inhabitants"
+    create "London" "8,787,892 inhabitants"
 -}
 create: String -> nData -> Node nData
 create id nodeData=
@@ -34,7 +34,7 @@ create id nodeData=
 
 {-| Convert a node to a tuple.
 
-  toTuple {id = "London", value = "8,787,892 inhabitants"} == ("London", "8,787,892 inhabitants")
+    toTuple {id = "London", value = "8,787,892 inhabitants"} == ("London", "8,787,892 inhabitants")
 
 -}
 toTuple: Node nData -> (String, Node nData)
@@ -43,7 +43,7 @@ toTuple node =
 
 {-| Convert a tuple to a node.
 
-  fromTuple ("London", "8,787,892 inhabitants") == {id = "London", value = "8,787,892 inhabitants"}
+    fromTuple ("London", "8,787,892 inhabitants") == {id = "London", value = "8,787,892 inhabitants"}
 
 -}
 fromTuple: (String, Node nData) -> Node nData

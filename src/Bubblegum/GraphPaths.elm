@@ -1,9 +1,9 @@
 module Bubblegum.GraphPaths exposing(create, GraphPaths, byId, byNodeIds, parent, descendants, descendantsOrSelf, children)
 
-{-| GraphPaths helps a graph as a list of paths.
+{-| GraphPaths represents a graph as a list of paths.
 
 # Build
-@docs create
+@docs create, GraphPaths
 
 #Query
 @docs byId, byNodeIds, parent, descendants, descendantsOrSelf, children
@@ -13,12 +13,17 @@ module Bubblegum.GraphPaths exposing(create, GraphPaths, byId, byNodeIds, parent
 import Dict exposing (Dict)
 import Bubblegum.Path as Path exposing(..)
 
+{-| Representation of graph as a list of paths.
+
+  * paths represent the list of paths.
+  * idToPath provides a quick conversion between pathId and its value.
+ -}
 type alias GraphPaths = {
   paths: List Path
   , idToPath: Dict String Path
 }
 
-{-| Creates an object representing the paths withn a graph -}
+{-| Creates an object representing an enumeration of paths in the graph -}
 create: List Path -> GraphPaths
 create paths =
   let
@@ -31,7 +36,7 @@ create paths =
 
 {-| Retrieve a path by id 
 
-  byid graphPaths "001/011/111"
+    byid graphPaths "001/011/111"
 -}
 byId: GraphPaths -> String -> Maybe Path
 byId paths id =
@@ -40,36 +45,29 @@ byId paths id =
 
 {-| Retrieve a path by providing a list of nodeIds 
 
-  byNodeIds graphPaths ["Athena", "Zeus"]
+    byNodeIds graphPaths ["Athena", "Zeus"]
 -}
 byNodeIds: GraphPaths -> List String -> Maybe Path
 byNodeIds paths nodeIds =
   paths.paths |> List.filter (matchNodeIds nodeIds) |> List.head
 
-{-
-  Selects the parent if any
--}
-parent: GraphPaths -> Path -> Maybe Path
+{-| Selects the parent if any -}
+parent: GraphPaths -> String -> Maybe Path
 parent paths path=
   path.nodeIds |> List.tail |> Maybe.andThen (byNodeIds paths)
 
-{-
-  Selects all descendants
--}
-descendants: GraphPaths -> Path -> List Path
+{-| Selects all descendants -}
+descendants: GraphPaths -> String -> List Path
 descendants paths path=
-  List.filter (matchDescendant path.nodeIds) paths.paths
-{-
-  Selects all descendants and itself
--}
-descendantsOrSelf: GraphPaths -> Path -> List Path
+  byId paths path |> Maybe.map (descendantsByPath paths) |> Maybe.withDefault []
+
+{-| Selects all descendants and itself -}
+descendantsOrSelf: GraphPaths -> String -> List Path
 descendantsOrSelf paths path=
   List.filter (matchDescendantOrSelf path.nodeIds) paths.paths
 
-{-
-  Selects all children
--}
-children: GraphPaths -> Path -> List Path
+{-| Selects all children -}
+children: GraphPaths -> String -> List Path
 children paths path=
   List.filter (matchChildren path.nodeIds) paths.paths
 

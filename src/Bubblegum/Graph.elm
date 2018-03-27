@@ -2,12 +2,12 @@ module Bubblegum.Graph exposing(create, Graph, findNode, findEdge, findEdgesBySo
 
 {-| Graph helps to represent a directed acyclic graph consisting of a set of nodes and a set of edges.
 
-This is an experimental implementation which attempts to expose a graph as a list of paths, similar in concept to xpath.
+This is an **experimental** implementation which attempts to expose a graph as a list of paths, similar in concept to xpath.
 In other words, the graph is converted to a flat list to make processing easier.
 
 This library has been implemented with the idea of of been used for the Bubblegum UI library. However, it should be possible to use it for other purposes.
 
-If you are looking for a general purpose Graph library, I would recommend [this](https://github.com/elm-community/graph) instead.
+If you are looking for a general purpose Graph library, I would recommend [the elm-community/graph one](https://github.com/elm-community/graph) instead.
 
 Limits of Bubblegum.Graph:
  * No more than 1000 nodes or edges.
@@ -31,7 +31,12 @@ import Bubblegum.Relations as Relations exposing(..)
 import Bubblegum.Path as Path
 import Bubblegum.GraphPaths as GraphPaths exposing(GraphPaths)
 
-{-| The core representation of a value.
+{-| The representation of a graph.
+
+ * nodes and edges hold the main data model and are implemented as dictionaries to facilitate quick direct access.
+ * relations is special view of the graph to explore parent/child relationships (inbound/outbound).
+ * paths is a special view of the graph to expose the graph as a list of paths. 
+
 -}
 type alias Graph nData eData = {
     nodes: Dict String (Node nData)
@@ -55,41 +60,41 @@ create nodes edges=
     , paths = createGraphPaths relations
   }
   
-{-| find node from the graph.
+{-| Find a node from the graph.
 
-  findNode graph "Zeus"
+    findNode graph "Zeus"
 -}
 findNode: Graph nData eData -> String -> Maybe (Node nData)
 findNode graph id =
   Dict.get id graph.nodes
 
-{-| find edge models by source and destination.
+{-| Find the edge by source and destination. There should be no more than one edge for same source and destination.
 
-  findEdge graph ("Zeus", "Athena")
+    findEdge graph ("Zeus", "Athena")
 -}
 findEdge: Graph nData eData -> (String, String) -> Maybe (Edge eData)
 findEdge graph sourceDest =
    Dict.get sourceDest graph.edges 
 
-{-| find edge models by source.
+{-| Find edge models by source.
 
-  findEdgesBySource graph "Zeus"
+    findEdgesBySource graph "Zeus"
 -}
 findEdgesBySource: Graph nData eData -> String -> List (Edge eData)
 findEdgesBySource graph src =
    Dict.get src graph.relations |> Maybe.map .outbound |> Maybe.withDefault [] |> List.map (\r -> Dict.get r graph.edges) |> List.filterMap identity
 
-{-| find edge models by destination.
+{-| Find edge models by destination.
 
-  findEdgesByDestination graph "Athena"
+    findEdgesByDestination graph "Athena"
 -}
 findEdgesByDestination: Graph nData eData -> String -> List (Edge eData)
 findEdgesByDestination graph dest =
    Dict.get dest graph.relations |> Maybe.map .inbound |> Maybe.withDefault [] |> List.map (\r -> Dict.get r graph.edges) |> List.filterMap identity
 
-{-| find the relations given the nodeId.
+{-| Find the relations given the nodeId.
 
-  findRelations graph "Athena"
+    findRelations graph "Athena"
 -}
 findRelations:  Graph nData eData -> String -> Maybe Relations
 findRelations graph nodeId =

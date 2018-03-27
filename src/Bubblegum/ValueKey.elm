@@ -13,7 +13,7 @@ Internally, the ValueKey object store these values in reverse order, to make it 
 # Assumptions
  
 Indices and nodeIds should not exceed 1000 (3 digits). In practice, this should not be an issue.
-This means the graph should not exceed 1000 nodes, otherwise some the functions may return unexpected values.
+This means the graph should not exceed 1000 nodes, otherwise some of the functions may return unexpected values.
 The benefit of this approach is that the length of the key is therefore determined by the number of nodes in the path.
 
 # Conversion
@@ -35,7 +35,7 @@ import Tuple
 
 {-| Convert a string to value key.
   
-  fromStr "004/006/007/009:006/007/008/009" == {path = [9,7,6,4], indices = [9,8,7,6]}
+    fromStr "004/006/007/009:006/007/008/009" == {path = [9,7,6,4], indices = [9,8,7,6]}
 
 -}
 fromStr: String -> ValueKey
@@ -50,7 +50,7 @@ fromStr key =
 
 {-| Convert a string to value key.
   
-  toStr {path = [9,7,6,4], indices = [9,8,7,6]} ==  "004/006/007/009:006/007/008/009"
+    toStr {path = [9,7,6,4], indices = [9,8,7,6]} ==  "004/006/007/009:006/007/008/009"
 
 -}
 toStr: ValueKey -> String
@@ -59,7 +59,7 @@ toStr key =
 
 {-| Return the indice of the child node.
   
-   childIndice  "004/006/007/011:006/007/008/009" == 9
+    childIndice  "004/006/007/011:006/007/008/009" == 9
 
 -}
 childIndice: String -> Int
@@ -68,7 +68,7 @@ childIndice key =
 
 {-| Increment or decrement a key.
   
-   incrementKey 1 "004/006/007/011:006/007/008/009" == "004/006/007/011:006/007/008/010"
+    incrementKey 1 "004/006/007/011:006/007/008/009" == "004/006/007/011:006/007/008/010"
 
 -}
 incrementKey: Int -> String -> String
@@ -77,7 +77,7 @@ incrementKey delta key =
 
 {-| Check if a key is a descendant or self of another key.
   
-   isDescendantOrSelf "004/006/007/011:006/007/008/009" "004/006/007/011:006/007/008/009"
+    isDescendantOrSelf "004/006/007/011:006/007/008/009" "004/006/007/011:006/007/008/009"
 
 -}
 isDescendantOrSelf: String -> String -> Bool
@@ -87,7 +87,7 @@ isDescendantOrSelf self tested =
 
 {-| Check if a key is a descendant of another key.
   
-   isDescendant "004/006/007/011:006/007/008/009" "004/006/007/011:006/007/008/009"
+    isDescendant "004/006/007/011:006/007/008/009" "004/006/007/011:006/007/008/009"
 
 -}
 isDescendant: String -> String -> Bool
@@ -96,7 +96,7 @@ isDescendant self tested =
 
 {-| Check if a key is a ancestor of another key.
   
-   isAncestor "004/006/007/011:006/007/008/009" "004/006/007/011:006/007/008/009"
+    isAncestor "004/006/007/011:006/007/008/009" "004/006/007/011:006/007/008/009"
 
 -}
 isAncestor:  String -> String -> Bool

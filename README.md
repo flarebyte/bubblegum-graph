@@ -1,7 +1,19 @@
 # Directed graph for UI components
 [![Build Status](https://travis-ci.org/flarebyte/bubblegum-graph.svg?branch=master)](https://travis-ci.org/flarebyte/bubblegum-graph)
 
-> This library provides a directed graph for representing relationships between UI components.
+> This library provides a directed acyclic graph for representing relationships between UI components.
+
+This is an **experimental** implementation which attempts to expose a graph as a list of paths, similar in concept to xpath.
+In other words, the graph is converted to a flat list to make processing easier.
+
+This library has been implemented with the idea of of been used for the Bubblegum UI library. However, it should be possible to use it for other purposes.
+
+If you are looking for a general purpose Graph library, I would recommend [the elm-community/graph one](https://github.com/elm-community/graph) instead.
+
+Limits:
+ * No more than 1000 nodes or edges.
+ * Only one edge with the same source and destination.
+ * The graph should not have any cycles (loops).
 
 ## Getting Started
 
@@ -10,7 +22,7 @@
 There is no dependency.
 
 ```
-elm-app package install <package-name>
+elm-app package install flarebyte/bubblegum-graph
 ```
 
 

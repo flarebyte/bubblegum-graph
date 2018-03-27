@@ -12,7 +12,7 @@ module Bubblegum.Relations exposing(create, Relations, isLeaf, isRoot)
 
 {-| The representation of the inbound and outbound relationships to a node.
   
-  { inbound = [("London", "Paris"), ("Amsterdam", "Paris")], outbound = [("Paris", "New York")] }
+    { inbound = [("London", "Paris"), ("Amsterdam", "Paris")], outbound = [("Paris", "New York")] }
 
 -}
 type alias Relations = {
@@ -23,7 +23,7 @@ type alias Relations = {
 
 {-| Create the relations against a node providing the inbound and outbound values.
 
-  create [("London", "Paris"), ("Amsterdam", "Paris")] [("Paris", "New York")]
+    create [("London", "Paris"), ("Amsterdam", "Paris")] [("Paris", "New York")]
  
 -}
 create: List (String, String) -> List (String, String) -> Relations
@@ -35,7 +35,7 @@ create inbound outbound =
 
 {-| Test whether the relations represents a leaf in the graph. No more children.
 
-  isLeaf { inbound = [("London", "Paris"), ("Amsterdam", "Paris")], outbound = [] } == True
+    isLeaf { inbound = [("London", "Paris"), ("Amsterdam", "Paris")], outbound = [] } == True
 
 -}
 isLeaf: Relations -> Bool
@@ -44,7 +44,7 @@ isLeaf relation =
 
 {-| Test whether the relations represents a root in the graph. No more parents.
 
-  isLeaf { inbound = [], outbound = [("Paris", "New York")] } == True
+    isRoot { inbound = [], outbound = [("Paris", "New York")] } == True
 
 -}
 isRoot: Relations -> Bool

@@ -7,4 +7,5 @@ module Bubblegum.Irrelevant exposing(..)
 
 -}
 
+{-| Data which is not relevant or applicable in this given situation -}
 type Irrelevant = Irrelevant

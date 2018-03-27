@@ -8,6 +8,14 @@
     ],
     "exposed-modules": [
         "Bubblegum.Graph"
+        , "Bubblegum.GraphPaths"
+        , "Bubblegum.Node"
+        , "Bubblegum.Edge"
+        , "Bubblegum.Relations"
+        , "Bubblegum.Path"   
+        , "Bubblegum.ValueKey"
+        , "Bubblegum.ValueDict"
+        , "Bubblegum.Irrelevant"       
     ],
     "dependencies": {
         "elm-lang/core": "5.1.1 <= v < 6.0.0",

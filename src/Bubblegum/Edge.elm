@@ -41,7 +41,7 @@ create source destination edgeData=
 
 {-| Convert an edge to a tuple.
 
-  toTuple ldnParis == (("London", "Paris"), "344 km")
+    toTuple ldnParis == (("London", "Paris"), "344 km")
 
 -}
 toTuple: Edge eData -> ((String, String), Edge eData)
@@ -50,7 +50,7 @@ toTuple edge =
 
 {-| Convert a tuple to an edge.
 
-  fromTuple (("London", "Paris"), "344 km") == { source = "London", destination = "Paris", value = "344 km"}
+    fromTuple (("London", "Paris"), "344 km") == { source = "London", destination = "Paris", value = "344 km"}
 
 -}
 fromTuple: ((String, String), Edge eData) -> Edge eData
