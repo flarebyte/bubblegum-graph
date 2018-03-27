@@ -1,6 +1,6 @@
 {
     "version": "1.0.0",
-    "summary": "This library provides a directed graph for representing relationships between UI components.",
+    "summary": "Directed graph for representing relationships between UI components.",
     "repository": "https://github.com/flarebyte/bubblegum-graph.git",
     "license": "BSD3",
     "source-directories": [
