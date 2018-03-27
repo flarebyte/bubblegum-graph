@@ -105,6 +105,70 @@
     "generated-with-elm-version": "0.18.0"
   },
   {
+    "name": "Bubblegum.ValueDict",
+    "comment": " A specialized dictionary mapping unique keys to values.\n\n# Build\n@docs insert, update, remove\n\n# Query\n@docs isEmpty, member, get, size\n\n# Lists\n@docs keys, toList, fromList\n\n# Transform\nMost transformations could be done after exporting with toList.\n\n# Combine\n@docs union\n",
+    "aliases": [],
+    "types": [],
+    "values": [
+      {
+        "name": "fromList",
+        "comment": " Convert an association list into values . ",
+        "type": "List ( String, m ) -> Bubblegum.ValueDict.Values m"
+      },
+      {
+        "name": "get",
+        "comment": " Get the value associated with a value-key. If the key is not found, return\n`Nothing`.\n\n    get values \"004/006/007/011:006/007/008/009\" == (\"004/006/007/011:006/007/008/009\", \"some value\")\n",
+        "type": "Bubblegum.ValueDict.Values m -> String -> Maybe.Maybe ( String, m )"
+      },
+      {
+        "name": "insert",
+        "comment": " Insert a value into values. Replaces value when there is\na collision. This will take *O(log n)* time.\n\n    insert values (\"004/006/007/011:006/007/008/009\", \"some value\")\n\n",
+        "type": "Bubblegum.ValueDict.Values m -> ( String, m ) -> Bubblegum.ValueDict.Values m"
+      },
+      {
+        "name": "isEmpty",
+        "comment": " Determine if the dictionary is empty.\n\n    isEmpty empty == True\n",
+        "type": "Bubblegum.ValueDict.Values m -> Bool"
+      },
+      {
+        "name": "keys",
+        "comment": " Get all of the keys in values, sorted from lowest to highest.\n\n    keys values\n",
+        "type": "Bubblegum.ValueDict.Values m -> List String"
+      },
+      {
+        "name": "member",
+        "comment": " Check whether there is value-key in values.\n\n    member values \"004/006/007/011:006/007/008/009\" == True\n",
+        "type": "Bubblegum.ValueDict.Values m -> String -> Bool"
+      },
+      {
+        "name": "remove",
+        "comment": " Remove a key-value pair from values. If the key is not found,\nno changes are made. This will take *O(log n)* time.\n\n    remove values (\"004/006/007/011:006/007/008/009\", \"some value\")\n\n",
+        "type": "Bubblegum.ValueDict.Values m -> String -> Bubblegum.ValueDict.Values m"
+      },
+      {
+        "name": "size",
+        "comment": " Determine the number of key-value pairs in the dictionary. ",
+        "type": "Bubblegum.ValueDict.Values m -> Int"
+      },
+      {
+        "name": "toList",
+        "comment": " Convert values into an association list of key-value pairs, sorted by keys. ",
+        "type": "Bubblegum.ValueDict.Values m -> List ( String, m )"
+      },
+      {
+        "name": "union",
+        "comment": " Combine two values objects. If there is a collision, preference is given\nto the first values object.\n",
+        "type": "Bubblegum.ValueDict.Values m -> Bubblegum.ValueDict.Values m -> Bubblegum.ValueDict.Values m"
+      },
+      {
+        "name": "update",
+        "comment": " Update the value of a values object for a specific key with a given function. ",
+        "type": "Bubblegum.ValueDict.Values m -> String -> (Maybe.Maybe ( String, m ) -> Maybe.Maybe ( String, m )) -> Bubblegum.ValueDict.Values m"
+      }
+    ],
+    "generated-with-elm-version": "0.18.0"
+  },
+  {
     "name": "Bubblegum.ValueKey",
     "comment": " ValueKey helps to represent the key of value in a ValueAccess object.\n\n# Format\n\nA value key has a format like \"004/006/007/009:006/007/008/009\". \nThe values on left of the colon represents the path (list of nodeIds), sorted from ancestors to children.\nThe values on right of the colon represents the indices.\nInternally, the ValueKey object store these values in reverse order, to make it easier to find the parent by applying List.tail.\n\n\n# Assumptions\n \nIndices and nodeIds should not exceed 1000 (3 digits). In practice, this should not be an issue.\nThis means the graph should not exceed 1000 nodes, otherwise some of the functions may return unexpected values.\nThe benefit of this approach is that the length of the key is therefore determined by the number of nodes in the path.\n\n# Conversion\n@docs fromStr, toStr\n\n# Operations on indices\n@docs childIndice, incrementKey\n\n# Predicates\n@docs isDescendantOrSelf, isDescendant, isAncestor\n\n",
     "aliases": [],
@@ -149,24 +213,23 @@
     "generated-with-elm-version": "0.18.0"
   },
   {
-    "name": "Bubblegum.Path",
-    "comment": " Path helps to represent a path between two nodes.\n\n# Build\n@docs create, Path\n\n",
-    "aliases": [
+    "name": "Bubblegum.Irrelevant",
+    "comment": " Irrelevant is type to be used as value when the value is not relevant.\n\n# Build\n@docs Irrelevant\n\n",
+    "aliases": [],
+    "types": [
       {
-        "name": "Path",
-        "comment": " Representation of path in the Graph.\n\n    { id = \"002/001\", nodeIds = [\"Athena\", \"Zeus\"] }\n\n * id is a unique id representing this path in the graph. The expected format is a list of integers seperated by slashes. Each integer represents a nodeIds sorted from parents to children.\n * nodeIds represent a list of nodeIds, sorted from children to parent.\n\n ",
+        "name": "Irrelevant",
+        "comment": " Data which is not relevant or applicable in this given situation ",
         "args": [],
-        "type": "{ id : String, nodeIds : List String }"
+        "cases": [
+          [
+            "Irrelevant",
+            []
+          ]
+        ]
       }
     ],
-    "types": [],
-    "values": [
-      {
-        "name": "create",
-        "comment": " Create a path providing an unique id and a list of node ids, children first. \n\n    create (Dict.fromList [(\"Athena\", 1), (\"Zeus\", 2)]  [\"Athena\", \"Zeus\"]\n",
-        "type": "Dict.Dict String Int -> List String -> Bubblegum.Path.Path"
-      }
-    ],
+    "values": [],
     "generated-with-elm-version": "0.18.0"
   },
   {
@@ -234,65 +297,22 @@
     "generated-with-elm-version": "0.18.0"
   },
   {
-    "name": "Bubblegum.ValueDict",
-    "comment": " A specialized dictionary mapping unique keys to values.\n\n# Build\n@docs insert, update, remove\n\n# Query\n@docs isEmpty, member, get, size\n\n# Lists\n@docs keys, toList, fromList\n\n# Transform\nMost transformations could be done after exporting with toList.\n\n# Combine\n@docs union\n",
-    "aliases": [],
+    "name": "Bubblegum.Path",
+    "comment": " Path helps to represent a path between two nodes.\n\n# Build\n@docs create, Path\n\n",
+    "aliases": [
+      {
+        "name": "Path",
+        "comment": " Representation of path in the Graph.\n\n    { id = \"002/001\", nodeIds = [\"Athena\", \"Zeus\"] }\n\n * id is a unique id representing this path in the graph. The expected format is a list of integers seperated by slashes. Each integer represents a nodeIds sorted from parents to children.\n * nodeIds represent a list of nodeIds, sorted from children to parent.\n\n ",
+        "args": [],
+        "type": "{ id : String, nodeIds : List String }"
+      }
+    ],
     "types": [],
     "values": [
       {
-        "name": "fromList",
-        "comment": " Convert an association list into values . ",
-        "type": "List ( String, m ) -> Bubblegum.ValueDict.Values m"
-      },
-      {
-        "name": "get",
-        "comment": " Get the value associated with a value-key. If the key is not found, return\n`Nothing`.\n\n    get values \"004/006/007/011:006/007/008/009\" == (\"004/006/007/011:006/007/008/009\", \"some value\")\n",
-        "type": "Bubblegum.ValueDict.Values m -> String -> Maybe.Maybe ( String, m )"
-      },
-      {
-        "name": "insert",
-        "comment": " Insert a value into values. Replaces value when there is\na collision. This will take *O(log n)* time.\n\n    insert values (\"004/006/007/011:006/007/008/009\", \"some value\")\n\n",
-        "type": "Bubblegum.ValueDict.Values m -> ( String, m ) -> Bubblegum.ValueDict.Values m"
-      },
-      {
-        "name": "isEmpty",
-        "comment": " Determine if the dictionary is empty.\n\n    isEmpty empty == True\n",
-        "type": "Bubblegum.ValueDict.Values m -> Bool"
-      },
-      {
-        "name": "keys",
-        "comment": " Get all of the keys in values, sorted from lowest to highest.\n\n    keys values\n",
-        "type": "Bubblegum.ValueDict.Values m -> List String"
-      },
-      {
-        "name": "member",
-        "comment": " Check whether there is value-key in values.\n\n    member values \"004/006/007/011:006/007/008/009\" == True\n",
-        "type": "Bubblegum.ValueDict.Values m -> String -> Bool"
-      },
-      {
-        "name": "remove",
-        "comment": " Remove a key-value pair from values. If the key is not found,\nno changes are made. This will take *O(log n)* time.\n\n    remove values (\"004/006/007/011:006/007/008/009\", \"some value\")\n\n",
-        "type": "Bubblegum.ValueDict.Values m -> String -> Bubblegum.ValueDict.Values m"
-      },
-      {
-        "name": "size",
-        "comment": " Determine the number of key-value pairs in the dictionary. ",
-        "type": "Bubblegum.ValueDict.Values m -> Int"
-      },
-      {
-        "name": "toList",
-        "comment": " Convert values into an association list of key-value pairs, sorted by keys. ",
-        "type": "Bubblegum.ValueDict.Values m -> List ( String, m )"
-      },
-      {
-        "name": "union",
-        "comment": " Combine two values objects. If there is a collision, preference is given\nto the first values object.\n",
-        "type": "Bubblegum.ValueDict.Values m -> Bubblegum.ValueDict.Values m -> Bubblegum.ValueDict.Values m"
-      },
-      {
-        "name": "update",
-        "comment": " Update the value of a values object for a specific key with a given function. ",
-        "type": "Bubblegum.ValueDict.Values m -> String -> (Maybe.Maybe ( String, m ) -> Maybe.Maybe ( String, m )) -> Bubblegum.ValueDict.Values m"
+        "name": "create",
+        "comment": " Create a path providing an unique id and a list of node ids, children first. \n\n    create (Dict.fromList [(\"Athena\", 1), (\"Zeus\", 2)]  [\"Athena\", \"Zeus\"]\n",
+        "type": "Dict.Dict String Int -> List String -> Bubblegum.Path.Path"
       }
     ],
     "generated-with-elm-version": "0.18.0"
@@ -328,26 +348,6 @@
         "type": "Bubblegum.Node.Node nData -> ( String, Bubblegum.Node.Node nData )"
       }
     ],
-    "generated-with-elm-version": "0.18.0"
-  },
-  {
-    "name": "Bubblegum.Irrelevant",
-    "comment": " Irrelevant is type to be used as value when the value is not relevant.\n\n# Build\n@docs Irrelevant\n\n",
-    "aliases": [],
-    "types": [
-      {
-        "name": "Irrelevant",
-        "comment": " Data which is not relevant or applicable in this given situation ",
-        "args": [],
-        "cases": [
-          [
-            "Irrelevant",
-            []
-          ]
-        ]
-      }
-    ],
-    "values": [],
     "generated-with-elm-version": "0.18.0"
   }
 ]

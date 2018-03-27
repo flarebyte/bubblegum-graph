@@ -43,21 +43,21 @@ all =
            , describe "find parent" <|
             [ test "when exists" <|
                 \() ->
-                    Expect.equal (parent  myPaths path3) (Just path4)
+                    Expect.equal (parent  myPaths path3.id) (Just path4)
             ]
            , describe "find descendant" <|
             [ test "when exists" <|
                 \() ->
-                    Expect.equal (descendants myPaths path4) ([path1, path2, path3, path11, path12])
+                    Expect.equal (descendants myPaths path4.id) ([path1, path2, path3, path11, path12])
             ]
            , describe "find descendant or self" <|
             [ test "when exists" <|
                 \() ->
-                    Expect.equal (descendantsOrSelf myPaths path4) ([path1, path2, path3, path4, path11, path12])
+                    Expect.equal (descendantsOrSelf myPaths path4.id) ([path1, path2, path3, path4, path11, path12])
             ]
             , describe "find direct children" <|
             [ test "when exists" <|
                 \() ->
-                    Expect.equal (children myPaths path4) ([path3, path11])
+                    Expect.equal (children myPaths path4.id) ([path3, path11])
             ]
          ]

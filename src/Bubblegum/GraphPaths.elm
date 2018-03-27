@@ -54,7 +54,7 @@ byNodeIds paths nodeIds =
 {-| Selects the parent if any -}
 parent: GraphPaths -> String -> Maybe Path
 parent paths path=
-  path.nodeIds |> List.tail |> Maybe.andThen (byNodeIds paths)
+  byId paths path |> Maybe.andThen (parentByPath paths)
 
 {-| Selects all descendants -}
 descendants: GraphPaths -> String -> List Path
@@ -64,12 +64,12 @@ descendants paths path=
 {-| Selects all descendants and itself -}
 descendantsOrSelf: GraphPaths -> String -> List Path
 descendantsOrSelf paths path=
-  List.filter (matchDescendantOrSelf path.nodeIds) paths.paths
+  byId paths path |> Maybe.map (descendantsOrSelfByPath paths) |> Maybe.withDefault []
 
 {-| Selects all children -}
 children: GraphPaths -> String -> List Path
 children paths path=
-  List.filter (matchChildren path.nodeIds) paths.paths
+  byId paths path |> Maybe.map (childrenByPath paths) |> Maybe.withDefault []
 
 -- FOR INTERNAL USE ONLY
 -- Private methods
@@ -110,3 +110,23 @@ pathAsTuple path =
 
 matchNodeIds: List String -> Path -> Bool
 matchNodeIds nodeIds path = path.nodeIds == nodeIds
+
+-- Select parent
+parentByPath: GraphPaths -> Path -> Maybe Path
+parentByPath paths path=
+  path.nodeIds |> List.tail |> Maybe.andThen (byNodeIds paths)
+
+--  Selects all descendants
+descendantsByPath: GraphPaths -> Path -> List Path
+descendantsByPath paths path=
+  List.filter (matchDescendant path.nodeIds) paths.paths
+
+--  Selects all descendants and itself
+descendantsOrSelfByPath: GraphPaths -> Path -> List Path
+descendantsOrSelfByPath paths path=
+  List.filter (matchDescendantOrSelf path.nodeIds) paths.paths
+
+--  Selects all children
+childrenByPath: GraphPaths -> Path -> List Path
+childrenByPath paths path=
+   List.filter (matchChildren path.nodeIds) paths.paths
